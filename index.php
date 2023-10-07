@@ -9,7 +9,7 @@
 
       <div class="home__data">
         <h1 class="home__title">
-          Barbearia TG
+          Barbearia TG1
 
           <div>Agende um Horário!</div>
         </h1>
