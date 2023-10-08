@@ -20,7 +20,7 @@
           deseja, escolhendo também com quem você quer.
         </p>
 
-        <a href="Agendamento/" class="button">
+        <a href="{{ route('scheduling.index') }}" class="button">
           Agendar <i class="ri-arrow-right-circle-line"></i>
         </a>
       </div>

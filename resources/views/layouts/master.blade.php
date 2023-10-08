@@ -41,7 +41,7 @@
             </li>
 
             <li class="nav__item">
-              <a href="/Agendamento/#who" class="nav__link">Agenda</a>
+              <a href="{{ route('scheduling.index') }}" class="nav__link">Agenda</a>
             </li>
 
             <!-- Close button -->
