@@ -72,7 +72,7 @@
     <section class="who section" id="who">
         <span class="section__subtitle">Funcionário</span>
         <h2 class="section__title">Quais são!</h2>
-
+        
         <div class="who__container container grid">
             
             @foreach($workers as $worker)

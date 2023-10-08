@@ -4,12 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Place;
 
-class Site extends Controller
+class PlaceController extends Controller
 {
     //
 
     public function index(Request $request){
-        return view('site.index');
+        $places = Place::all();
+
+        return view('places.index', compact('places'));
     }
 }

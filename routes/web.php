@@ -2,9 +2,10 @@
 
 use Illuminate\Support\Facades\Route;
 
-use App\Http\Controllers\Site;
-use App\Http\Controllers\Auth\Login;
-use App\Http\Controllers\Scheduling;
+use App\Http\Controllers\SiteController;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\SchedulingController;
+use App\Http\Controllers\PlaceController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,7 +22,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/site', [Site::class, 'index'])->name('site.index');
-Route::get('/login', [Login::class, 'index'])->name('auth.index');
-Route::get('/scheduling', [Scheduling::class, 'index'])->name('scheduling.index');
-
+Route::get('/site', [SiteController::class, 'index'])->name('site.index');
+Route::get('/login', [LoginController::class, 'index'])->name('auth.index');
+Route::get('/scheduling', [SchedulingController::class, 'index'])->name('scheduling.index');
+Route::get('/places', [PlaceController::class, 'index'])->name('places.all');
