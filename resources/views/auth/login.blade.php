@@ -19,7 +19,7 @@
 
 <body>
     <!-- ===== CSS ===== -->
-    <link rel="stylesheet" href="{{ asset('assets/css/login.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/login.css') }}"> 
     <div class="login">
         <div class="login__content">
             <div class="login__img">
