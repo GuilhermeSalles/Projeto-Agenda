@@ -7,13 +7,13 @@
 
   /*========== Colors ==========*/
   /*Color mode HSL(hue, saturation, lightness)*/
-  --first-color: hsl(19, 64%, 54%);
-  --first-color-alt: hsl(19, 64%, 52%);
-  --title-color: hsl(19, 16%, 15%);
-  --text-color: hsl(19, 16%, 35%);
-  --text-color-light: hsl(19, 8%, 55%);
-  --body-color: hsl(19, 100%, 96%);
-  --container-color: hsl(19, 100%, 97%);
+  --first-color: hsl(19, 64%, 58%);
+  --first-color-alt: hsl(19, 64%, 54%);
+  --title-color: hsl(19, 24%, 85%);
+  --text-color: hsl(19, 16%, 65%);
+  --body-color: hsl(19, 12%, 8%);
+  --container-color: hsl(19, 10%, 10%);
+  
 
   /*========== Font and typography ==========*/
   /*.5rem = 8px | 1rem = 16px ...*/
@@ -105,12 +105,13 @@ img {
 
 /*========== Variables Dark theme ==========*/
 body.dark-theme {
-  --first-color: hsl(19, 64%, 58%);
-  --first-color-alt: hsl(19, 64%, 54%);
-  --title-color: hsl(19, 24%, 85%);
-  --text-color: hsl(19, 16%, 65%);
-  --body-color: hsl(19, 12%, 8%);
-  --container-color: hsl(19, 10%, 10%);
+  --first-color: hsl(19, 64%, 54%);
+  --first-color-alt: hsl(19, 64%, 52%);
+  --title-color: hsl(19, 16%, 15%);
+  --text-color: hsl(19, 16%, 35%);
+  --body-color: hsl(19, 100%, 96%);
+  --container-color: hsl(19, 100%, 97%);
+  --text-color-light: hsl(19, 8%, 55%);
 }
 
 /*========== 
@@ -214,7 +215,7 @@ body.dark-theme {
 }
 
 .nav__logo img {
-  width: 25px;
+  width: 55px;
 }
 
 .nav__logo:hover {

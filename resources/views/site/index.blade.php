@@ -20,7 +20,7 @@
           deseja, escolhendo também com quem você quer.
         </p>
 
-        <a href="{{ route('scheduling.index') }}" class="button">
+        <a href="https://wa.me/5519984445559" class="button">
           Agendar <i class="ri-arrow-right-circle-line"></i>
         </a>
       </div>
@@ -29,6 +29,56 @@
     <img src="{{ asset('assets/img/leaf-branch-2.png') }}" alt="home image" class="home__leaf-1" />
     <img src="{{ asset('assets/img/leaf-branch-4.png') }}" alt="home image" class="home__leaf-2" />
   </section>
+ <!--==================== POPULAR ====================-->
+ <section class="popular section" id="popular">
+  <span class="section__subtitle">Cortes Populares</span>
+  <h2 class="section__title"> Os Cortes mais feitos</h2>
+
+  <div class="popular__container container grid">
+    <article class="popular__card">
+      <img src="{{ asset('assets/img/favicon.png') }}" alt="popula image" class="popular__img">
+
+      <h3 class="popular__name">Cabelo</h3>
+      <span class="popular__description">Corte apenas</span>
+
+      <span class="popular__price">R$30,00</span>
+    </article>
+
+    <article class="popular__card">
+      <img src="{{ asset('assets/img/favicon.png') }}" alt="popula image" class="popular__img">
+
+      <h3 class="popular__name">Combo CB</h3>
+      <span class="popular__description">Corte e Barba</span>
+
+      <span class="popular__price">R$65,00</span>
+    </article>
+
+    <article class="popular__card">
+      <img src="{{ asset('assets/img/favicon.png') }}" alt="popula image" class="popular__img">
+
+      <h3 class="popular__name">Combo CBS</h3>
+      <span class="popular__description">Corte, Barba e Sombrancelha</span>
+
+      <span class="popular__price">R$30,00</span>
+    </article>
+    <article class="popular__card">
+      <img src="{{ asset('assets/img/favicon.png') }}" alt="popula image" class="popular__img">
+
+      <h3 class="popular__name">Barba</h3>
+      <span class="popular__description">Apenas Barba</span>
+
+      <span class="popular__price">R$30,00</span>
+    </article>
+    <article class="popular__card">
+      <img src="{{ asset('assets/img/favicon.png') }}" alt="popula image" class="popular__img">
+
+      <h3 class="popular__name">Combo S</h3>
+      <span class="popular__description">Corte e Sombrancelha</span>
+
+      <span class="popular__price">R$30,00</span>
+    </article>
+  </div>
+</section>
 
   <!--==================== ABOUT ====================-->
   <section class="about section" id="about">
@@ -54,40 +104,6 @@
     <img src="{{ asset('assets/img/leaf-branch-1.png') }}" alt="about image" class="about__leaf">
   </section>
 
-  <!--==================== POPULAR ====================-->
-  <section class="popular section" id="popular">
-    <span class="section__subtitle">Cortes Populares</span>
-    <h2 class="section__title"> Os Cortes mais feitos</h2>
-
-    <div class="popular__container container grid">
-      <article class="popular__card">
-        <img src="{{ asset('assets/img/favicon.png') }}" alt="popula image" class="popular__img">
-
-        <h3 class="popular__name">Degrade</h3>
-        <span class="popular__description">Corte apenas</span>
-
-        <span class="popular__price">R$35,00</span>
-      </article>
-
-      <article class="popular__card">
-        <img src="{{ asset('assets/img/favicon.png') }}" alt="popula image" class="popular__img">
-
-        <h3 class="popular__name">Combo CB</h3>
-        <span class="popular__description">Corte e Barba</span>
-
-        <span class="popular__price">R$65,00</span>
-      </article>
-
-      <article class="popular__card">
-        <img src="{{ asset('assets/img/favicon.png') }}" alt="popula image" class="popular__img">
-
-        <h3 class="popular__name">Barba</h3>
-        <span class="popular__description">Apenas Barba</span>
-
-        <span class="popular__price">R$30,00</span>
-      </article>
-    </div>
-  </section>
   <!-- ==================== RECENTLY ====================
       <section class="recently section" id="recently"></section>
 

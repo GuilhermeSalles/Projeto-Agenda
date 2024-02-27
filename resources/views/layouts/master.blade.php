@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <!--=============== FAVICON ===============-->
-    <link rel="shortcut icon" href="{{ asset('assets/img/favicon.png') }}" type="image/x-icon" />
+    <link rel="shortcut icon" href="{{ asset('assets/img/logo.png') }}" type="image/x-icon" />
 
     <!--=============== REMIXICONS ===============-->
     <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet" />
@@ -74,7 +74,7 @@
     <div class="footer__container container grid">
       <div>
         <a href="#" class="footer__logo">
-          <img src="{{ asset('assets/img/logo.png') }}" alt="logo image">
+          {{-- <img src="{{ asset('assets/img/logo.png') }}" alt="logo image"> --}}
           Barbearia TG
         </a>
 
@@ -108,13 +108,13 @@
 
           <ul class="footer__links">
             <li>
-              <a href="#" class="footer__link">Contato</a>
+              <a href="https://wa.me/5519984445559" target="_blank" class="footer__link">Contato</a>
             </li>
             <li>
-              <a href="#" class="footer__link">Agendar</a>
+              <a href="https://wa.me/5519984445559" target="_blank" class="footer__link">Agendar</a>
             </li>
             <li>
-              <a href="#" class="footer__link">Videos</a>
+              <a href="https://www.instagram.com/bar.beariatg/" target="_blank" class="footer__link">Videos</a>
             </li>
           </ul>
         </div>
@@ -131,7 +131,8 @@
             </li>
 
             <li class="footer__information">
-              Segunda á Sexta 10:00 - 21:00
+              Segunda á Sexta 09:00 - 19:00 <br>
+              Domingos 08:00 - 12:00
             </li>
           </ul>
         </div>
