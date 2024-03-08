@@ -50,7 +50,7 @@
       <h3 class="popular__name">Combo CB</h3>
       <span class="popular__description">Corte e Barba</span>
 
-      <span class="popular__price">R$65,00</span>
+      <span class="popular__price">R$50,00</span>
     </article>
 
     <article class="popular__card">
@@ -59,7 +59,7 @@
       <h3 class="popular__name">Combo CBS</h3>
       <span class="popular__description">Corte, Barba e Sombrancelha</span>
 
-      <span class="popular__price">R$30,00</span>
+      <span class="popular__price">R$60,00</span>
     </article>
     <article class="popular__card">
       <img src="{{ asset('assets/img/favicon.png') }}" alt="popula image" class="popular__img">
@@ -67,7 +67,7 @@
       <h3 class="popular__name">Barba</h3>
       <span class="popular__description">Apenas Barba</span>
 
-      <span class="popular__price">R$30,00</span>
+      <span class="popular__price">R$25,00</span>
     </article>
     <article class="popular__card">
       <img src="{{ asset('assets/img/favicon.png') }}" alt="popula image" class="popular__img">
@@ -75,7 +75,7 @@
       <h3 class="popular__name">Combo S</h3>
       <span class="popular__description">Corte e Sombrancelha</span>
 
-      <span class="popular__price">R$30,00</span>
+      <span class="popular__price">R$40,00</span>
     </article>
   </div>
 </section>
