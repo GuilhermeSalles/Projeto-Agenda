@@ -10,9 +10,12 @@ class Scheduling extends Model
     use HasFactory;
 
     protected $fillable = [
-        'place_id',
-        'time',
+        'name',
+        'phone',
+        'pro',
+        'service_id',
         'date',
+        'time',
         'fulfilled'
     ];
 }

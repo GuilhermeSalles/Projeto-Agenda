@@ -86,7 +86,7 @@
                 </article>
             @endforeach
             
-            <a href="Agendar" class="button agendar">
+            <a href="{{ route('scheduling.create') }}" class="button agendar">
               Agendar Agora<i class="ri-arrow-right-circle-line"></i></a>
         </div>
 
