@@ -23,3 +23,11 @@ Route::get('/', [SiteController::class, 'index'])->name('site.index');
 Route::get('/login', [LoginController::class, 'index'])->name('auth.index');
 Route::get('/scheduling', [SchedulingController::class, 'index'])->name('scheduling.index');
 Route::get('/places', [PlaceController::class, 'index'])->name('places.all');
+
+/* scheduling routes */
+Route::get('/schedule', [SchedulingController::class, 'create'])->name('scheduling.create');
+Route::post('/schedule/store', [SchedulingController::class, 'store'])->name('scheduling.store');
+
+
+
+
