@@ -17,8 +17,8 @@ return new class extends Migration
             $table->string('phone');
             $table->unsignedBigInteger('pro');
             $table->foreign('pro')->references('id')->on('professionals');
-            $table->unsignedBigInteger('service_id');
-            $table->foreign('service_id')->references('id')->on('services');
+            $table->unsignedBigInteger('service');
+            $table->foreign('service')->references('id')->on('services');
             $table->date('date');
             $table->time('time');
             $table->boolean('fulfilled')->default(false);

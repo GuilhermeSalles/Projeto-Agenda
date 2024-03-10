@@ -6,8 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-use App\Models\Services;
-use App\Models\Workers;
+use App\Models\Service;
+use App\Models\Professional;
 use App\Models\Scheduling;
 
 
@@ -16,16 +16,54 @@ class SchedulingController extends Controller
 {
     public function index(Request $request){
         
-        $workers = Workers::all();
-        $services = Services::all();
+        $professionals = Professional::all();
+
+        foreach ($professionals as $professional) {
+            // Decodifica a string JSON em um array
+            $specializedServiceIds = json_decode($professional->specializations);
+        
+            // Obtém os serviços especializados com os IDs obtidos
+            $services = Service::whereIn('id', $specializedServiceIds)->get();
+        
+            // Define os serviços especializados como um atributo do objeto profissional
+            $professional->services = $services;
+        
+            // Obtém os dias trabalhados do profissional
+            $workingHours = $professional->workingHours;
+        
+            // Resuma os dias trabalhados em um único atributo de texto
+            $workingDays = $workingHours->pluck('day_of_week')->implode(', ');
+        
+            // Define os dias trabalhados como um atributo do objeto profissional
+            $professional->workingDays = $workingDays;
+        }
+        
         $schedulings = Scheduling::all();
 
-        return view('scheduling.index', compact('workers', 'services', 'schedulings'));
+        return view('scheduling.index', compact('schedulings', 'professionals'));
     }
 
 
-    public function create(){
-        return view('scheduling.create');
+    public function create($id){
+
+      $professional = Professional::find($id);
+
+        $professionals = Professional::all();
+
+        $specializedServiceIds = json_decode($professional->specializations);
+
+        $services = Service::whereIn('id', $specializedServiceIds)->get();
+
+        return view('scheduling.create', compact('professional', 'professionals', 'services'));
+    
+    }
+
+    public function createSelectService($id, $service_id){
+        $professional = Professional::find($id);
+        $services = Service::find($service_id);
+
+        return view('scheduling.create-final', compact('professional',  'services'));
+    
     }
 
 
@@ -57,7 +95,7 @@ class SchedulingController extends Controller
         $scheduling->name = $validatedData['name'];
         $scheduling->phone = $validatedData['phone'];
         $scheduling->pro = $validatedData['pro'];
-        $scheduling->service_id = $validatedData['service'];
+        $scheduling->service = $validatedData['service'];
         $scheduling->date = $validatedData['date'];
         $scheduling->time = $validatedData['time'];
         

@@ -29,15 +29,15 @@
         <div class="nav__menu" id="nav-menu">
           <ul class="nav__list grid">
             <li class="nav__item">
-              <a href="#home" class="nav__link">Início</a>
+              <a href="/#home" class="nav__link">Início</a>
             </li>
 
             <li class="nav__item">
-              <a href="#about" class="nav__link">Sobre nos</a>
+              <a href="/#about" class="nav__link">Sobre nos</a>
             </li>
 
             <li class="nav__item">
-              <a href="#popular" class="nav__link">Cortes</a>
+              <a href="/#popular" class="nav__link">Cortes</a>
             </li>
 
             <li class="nav__item">
