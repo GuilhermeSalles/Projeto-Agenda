@@ -43,6 +43,29 @@ class SchedulingController extends Controller
         return view('scheduling.index', compact('schedulings', 'professionals'));
     }
 
+    public function all(){
+
+
+        $schedulings = Scheduling::all();
+
+        $services = Service::all();
+
+        $soma = 0;
+
+        foreach($schedulings as $scheduling){
+
+            if($scheduling->fulfilled == 1){
+                foreach($services as $service){
+                    if($service->id == $scheduling->service){
+                        $soma += $service->value;
+                    }
+                }
+            }
+        }
+
+        return view('scheduling.all', compact('schedulings', 'soma'));
+    }
+
 
     public function create($id){
 
@@ -60,9 +83,9 @@ class SchedulingController extends Controller
 
     public function createSelectService($id, $service_id){
         $professional = Professional::find($id);
-        $services = Service::find($service_id);
+        $service = Service::find($service_id);
 
-        return view('scheduling.create-final', compact('professional',  'services'));
+        return view('scheduling.create-final', compact('professional',  'service'));
     
     }
 
@@ -107,4 +130,65 @@ class SchedulingController extends Controller
         //return view('scheduling.create');
 
     }
+
+    public function cancel(Request $request){
+
+                // Valida os dados da requisição
+                $request->validate([
+                    'id' => 'required|integer',
+                ]);
+        
+                // Encontra o agendamento pelo ID
+                $scheduling = Scheduling::findOrFail($request->input('id'));
+        
+                // Atualiza os dados do agendamento
+                // fulfilled == 2 = CANCELADO
+                $scheduling->fulfilled = 2;
+
+                // Salva as alterações no banco de dados
+                $scheduling->save();
+
+        return redirect()->back();
+    }
+
+    public function finishe(Request $request){
+                    // Valida os dados da requisição
+                    $request->validate([
+                    'id' => 'required|integer',
+                ]);
+        
+                // Encontra o agendamento pelo ID
+                $scheduling = Scheduling::findOrFail($request->input('id'));
+        
+                // Atualiza os dados do agendamento
+                // fulfilled == 2 = CANCELADO
+                $scheduling->fulfilled = 1;
+
+                // Salva as alterações no banco de dados
+                $scheduling->save();
+
+        return redirect()->back();
+    }
+
+
+    
+    public function reset(Request $request){
+        // Valida os dados da requisição
+        $request->validate([
+        'id' => 'required|integer',
+    ]);
+
+    // Encontra o agendamento pelo ID
+    $scheduling = Scheduling::findOrFail($request->input('id'));
+
+    // Atualiza os dados do agendamento
+    // fulfilled == 2 = CANCELADO
+    $scheduling->fulfilled = 0;
+
+    // Salva as alterações no banco de dados
+    $scheduling->save();
+
+return redirect()->back();
+}
+
 }

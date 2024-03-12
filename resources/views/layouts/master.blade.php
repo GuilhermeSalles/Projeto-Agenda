@@ -41,7 +41,11 @@
             </li>
 
             <li class="nav__item">
-              <a href="{{ route('scheduling.index') }}" class="nav__link">Agenda</a>
+              <a href="{{ route('scheduling.index') }}" class="nav__link">Agendar</a>
+            </li>
+
+            <li class="nav__item">
+              <a href="{{ route('scheduling.all') }}" class="nav__link">Agendamentos</a>
             </li>
 
             <!-- Close button -->

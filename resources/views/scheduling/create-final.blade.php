@@ -51,14 +51,14 @@
 
                 <img src="{{ asset('assets/img/favicon.png') }}" alt="popula image" class="popular__img">
 
-                    <h3 class="popular__name">{{ $services->name }}</h3>
+                    <h3 class="popular__name">{{ $service->name }}</h3>
                     <span class="popular__description">Corte apenas</span>
 
-                    <span class="popular__price">{{ $services->value }}</span>
+                    <span class="popular__price">{{ $service->value }}</span>
                     
                     <br>
                     
-                    <a href="{{ route('scheduling.create-select-service', [$professional->id, $services->id]) }}" href="#" class="popular__price">Selecionar</a>
+                    <a href="{{ route('scheduling.create-select-service', [$professional->id, $service->id]) }}" href="#" class="popular__price">Selecionar</a>
             </article>
         </div>
 
@@ -66,6 +66,9 @@
 
     <form class="scheduling-form" method="POST" action="{{ route('scheduling.store') }}">
         @csrf
+
+        <input type="text" name="pro" value="{{ $professional->id }}">
+        <input type="text" name="service" value="{{ $service->id }}">
 
         <label class="popular__name" for="name">Seu nome: </label>
         <input type="text" name="name" id="name" value="Natã Coimbra">
