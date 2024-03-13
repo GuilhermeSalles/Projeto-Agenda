@@ -25,8 +25,18 @@ Route::get('/scheduling', [SchedulingController::class, 'index'])->name('schedul
 Route::get('/places', [PlaceController::class, 'index'])->name('places.all');
 
 /* scheduling routes */
-Route::get('/schedule', [SchedulingController::class, 'create'])->name('scheduling.create');
-Route::post('/schedule/store', [SchedulingController::class, 'store'])->name('scheduling.store');
+Route::get('/scheduling/create/{id}', [SchedulingController::class, 'create'])->name('scheduling.create');
+Route::get('/scheduling/create/{id}/service/{service_id}', [SchedulingController::class, 'createSelectService'])->name('scheduling.create-select-service');
+Route::get('/scheduling/all', [SchedulingController::class, 'all'])->name('scheduling.all');
+
+Route::post('/scheduling/store', [SchedulingController::class, 'store'])->name('scheduling.store');
+// proteger a seguinte rota com o middleware do login do gerente: 
+Route::post('/scheduling/cancel', [SchedulingController::class, 'cancel'])->name('scheduling.cancel');
+Route::post('/scheduling/finishe', [SchedulingController::class, 'finishe'])->name('scheduling.finishe');
+Route::post('/scheduling/reset', [SchedulingController::class, 'reset'])->name('scheduling.reset');
+
+
+
 
 
 

@@ -6,8 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-use App\Models\Services;
-use App\Models\Workers;
+use App\Models\Service;
+use App\Models\Professional;
 use App\Models\Scheduling;
 
 
@@ -16,16 +16,77 @@ class SchedulingController extends Controller
 {
     public function index(Request $request){
         
-        $workers = Workers::all();
-        $services = Services::all();
+        $professionals = Professional::all();
+
+        foreach ($professionals as $professional) {
+            // Decodifica a string JSON em um array
+            $specializedServiceIds = json_decode($professional->specializations);
+        
+            // Obtém os serviços especializados com os IDs obtidos
+            $services = Service::whereIn('id', $specializedServiceIds)->get();
+        
+            // Define os serviços especializados como um atributo do objeto profissional
+            $professional->services = $services;
+        
+            // Obtém os dias trabalhados do profissional
+            $workingHours = $professional->workingHours;
+        
+            // Resuma os dias trabalhados em um único atributo de texto
+            $workingDays = $workingHours->pluck('day_of_week')->implode(', ');
+        
+            // Define os dias trabalhados como um atributo do objeto profissional
+            $professional->workingDays = $workingDays;
+        }
+        
         $schedulings = Scheduling::all();
 
-        return view('scheduling.index', compact('workers', 'services', 'schedulings'));
+        return view('scheduling.index', compact('schedulings', 'professionals'));
+    }
+
+    public function all(){
+
+
+        $schedulings = Scheduling::all();
+
+        $services = Service::all();
+
+        $soma = 0;
+
+        foreach($schedulings as $scheduling){
+
+            if($scheduling->fulfilled == 1){
+                foreach($services as $service){
+                    if($service->id == $scheduling->service){
+                        $soma += $service->value;
+                    }
+                }
+            }
+        }
+
+        return view('scheduling.all', compact('schedulings', 'soma'));
     }
 
 
-    public function create(){
-        return view('scheduling.create');
+    public function create($id){
+
+      $professional = Professional::find($id);
+
+        $professionals = Professional::all();
+
+        $specializedServiceIds = json_decode($professional->specializations);
+
+        $services = Service::whereIn('id', $specializedServiceIds)->get();
+
+        return view('scheduling.create', compact('professional', 'professionals', 'services'));
+    
+    }
+
+    public function createSelectService($id, $service_id){
+        $professional = Professional::find($id);
+        $service = Service::find($service_id);
+
+        return view('scheduling.create-final', compact('professional',  'service'));
+    
     }
 
 
@@ -57,7 +118,7 @@ class SchedulingController extends Controller
         $scheduling->name = $validatedData['name'];
         $scheduling->phone = $validatedData['phone'];
         $scheduling->pro = $validatedData['pro'];
-        $scheduling->service_id = $validatedData['service'];
+        $scheduling->service = $validatedData['service'];
         $scheduling->date = $validatedData['date'];
         $scheduling->time = $validatedData['time'];
         
@@ -69,4 +130,65 @@ class SchedulingController extends Controller
         //return view('scheduling.create');
 
     }
+
+    public function cancel(Request $request){
+
+                // Valida os dados da requisição
+                $request->validate([
+                    'id' => 'required|integer',
+                ]);
+        
+                // Encontra o agendamento pelo ID
+                $scheduling = Scheduling::findOrFail($request->input('id'));
+        
+                // Atualiza os dados do agendamento
+                // fulfilled == 2 = CANCELADO
+                $scheduling->fulfilled = 2;
+
+                // Salva as alterações no banco de dados
+                $scheduling->save();
+
+        return redirect()->back();
+    }
+
+    public function finishe(Request $request){
+                    // Valida os dados da requisição
+                    $request->validate([
+                    'id' => 'required|integer',
+                ]);
+        
+                // Encontra o agendamento pelo ID
+                $scheduling = Scheduling::findOrFail($request->input('id'));
+        
+                // Atualiza os dados do agendamento
+                // fulfilled == 2 = CANCELADO
+                $scheduling->fulfilled = 1;
+
+                // Salva as alterações no banco de dados
+                $scheduling->save();
+
+        return redirect()->back();
+    }
+
+
+    
+    public function reset(Request $request){
+        // Valida os dados da requisição
+        $request->validate([
+        'id' => 'required|integer',
+    ]);
+
+    // Encontra o agendamento pelo ID
+    $scheduling = Scheduling::findOrFail($request->input('id'));
+
+    // Atualiza os dados do agendamento
+    // fulfilled == 2 = CANCELADO
+    $scheduling->fulfilled = 0;
+
+    // Salva as alterações no banco de dados
+    $scheduling->save();
+
+return redirect()->back();
+}
+
 }
