@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
+use Illuminate\Support\Carbon;
+
 use App\Models\Service;
 use App\Models\Professional;
 use App\Models\Scheduling;
@@ -43,10 +45,19 @@ class SchedulingController extends Controller
         return view('scheduling.index', compact('schedulings', 'professionals'));
     }
 
-    public function all(){
+    public function all($date = null){
 
+        if($date == null){
+            $date = Carbon::now('America/Sao_Paulo');
+        }else{
+            $date = Carbon::parse($date); 
+        }
 
-        $schedulings = Scheduling::all();
+        // $date = ($date == null) ? Carbon::now('America/Sao_Paulo') : $date;
+
+       
+
+        $schedulings = Scheduling::whereDate('date', $date->format('Y-m-d'))->get();
 
         $services = Service::all();
 
@@ -63,7 +74,58 @@ class SchedulingController extends Controller
             }
         }
 
-        return view('scheduling.all', compact('schedulings', 'soma'));
+
+        // Obtém todos os agendamentos
+        $schedulingsDates = Scheduling::all();
+
+        // Itera sobre cada agendamento
+        $schedulingsDates->map(function ($scheduling) {
+            // Obtém o serviço correspondente ao serviço do agendamento
+            $service = Service::find($scheduling->service);
+
+            // Verifica se o serviço foi encontrado
+            if ($service) {
+                // Adiciona a coluna 'value' com o valor do serviço ao agendamento
+                $scheduling->value = $service->value;
+            } else {
+                // Define um valor padrão caso o serviço não seja encontrado
+                $scheduling->value = 'Valor não encontrado';
+            }
+
+            return $scheduling;
+        });
+
+        // Agrupa os agendamentos por data
+        $schedulingsGroupedByDate = $schedulingsDates->groupBy('date');
+
+        $uniqueDates = $schedulingsGroupedByDate;
+
+        $dates = [];
+        foreach($uniqueDates as $udDate => $schedulingsDates){
+            //$udDate = Carbon::parse($udDate);
+
+            $valueSum = 0;
+
+            foreach($schedulingsDates as $dated){
+
+                if($dated->fulfilled == 1){
+                    $valueSum += $dated->value;
+                }
+            }
+
+
+            $schedulingAndDates = ['date' => Carbon::parse($udDate), 'total' => $valueSum];
+    
+            array_push($dates, $schedulingAndDates);
+        }
+
+
+        $uniqueDates = $dates;
+
+
+        $date = ($date->format('Y-m-d') == Carbon::now('America/Sao_Paulo')->format('Y-m-d')) ? null : $date;
+
+        return view('scheduling.all', compact('schedulings', 'soma', 'uniqueDates','date'));
     }
 
 
@@ -91,9 +153,7 @@ class SchedulingController extends Controller
 
 
     public function store(Request $request)
-    {
-
-         
+    {         
         // Valide os dados recebidos do formulário
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
@@ -133,39 +193,39 @@ class SchedulingController extends Controller
 
     public function cancel(Request $request){
 
-                // Valida os dados da requisição
-                $request->validate([
-                    'id' => 'required|integer',
-                ]);
-        
-                // Encontra o agendamento pelo ID
-                $scheduling = Scheduling::findOrFail($request->input('id'));
-        
-                // Atualiza os dados do agendamento
-                // fulfilled == 2 = CANCELADO
-                $scheduling->fulfilled = 2;
+        // Valida os dados da requisição
+        $request->validate([
+            'id' => 'required|integer',
+        ]);
 
-                // Salva as alterações no banco de dados
-                $scheduling->save();
+        // Encontra o agendamento pelo ID
+        $scheduling = Scheduling::findOrFail($request->input('id'));
+
+        // Atualiza os dados do agendamento
+        // fulfilled == 2 = CANCELADO
+        $scheduling->fulfilled = 2;
+
+        // Salva as alterações no banco de dados
+        $scheduling->save();
 
         return redirect()->back();
     }
 
     public function finishe(Request $request){
-                    // Valida os dados da requisição
-                    $request->validate([
-                    'id' => 'required|integer',
-                ]);
-        
-                // Encontra o agendamento pelo ID
-                $scheduling = Scheduling::findOrFail($request->input('id'));
-        
-                // Atualiza os dados do agendamento
-                // fulfilled == 2 = CANCELADO
-                $scheduling->fulfilled = 1;
+        // Valida os dados da requisição
+        $request->validate([
+            'id' => 'required|integer',
+        ]);
 
-                // Salva as alterações no banco de dados
-                $scheduling->save();
+        // Encontra o agendamento pelo ID
+        $scheduling = Scheduling::findOrFail($request->input('id'));
+
+        // Atualiza os dados do agendamento
+        // fulfilled == 2 = CANCELADO
+        $scheduling->fulfilled = 1;
+
+        // Salva as alterações no banco de dados
+        $scheduling->save();
 
         return redirect()->back();
     }
@@ -176,19 +236,19 @@ class SchedulingController extends Controller
         // Valida os dados da requisição
         $request->validate([
         'id' => 'required|integer',
-    ]);
+        ]);
 
-    // Encontra o agendamento pelo ID
-    $scheduling = Scheduling::findOrFail($request->input('id'));
+        // Encontra o agendamento pelo ID
+        $scheduling = Scheduling::findOrFail($request->input('id'));
 
-    // Atualiza os dados do agendamento
-    // fulfilled == 2 = CANCELADO
-    $scheduling->fulfilled = 0;
+        // Atualiza os dados do agendamento
+        // fulfilled == 2 = CANCELADO
+        $scheduling->fulfilled = 0;
 
-    // Salva as alterações no banco de dados
-    $scheduling->save();
+        // Salva as alterações no banco de dados
+        $scheduling->save();
 
-return redirect()->back();
-}
+        return redirect()->back();
+    }
 
 }
