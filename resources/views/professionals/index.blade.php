@@ -1,0 +1,27 @@
+@extends('layouts.master')
+
+@section('title', 'Profissionais')
+
+@section('content')
+    <section class="dad-div section">
+        <div class="container">
+            <a href="{{ route('professionals.create') }}" class="button">Criar Profissional</a>
+            <ul>
+                @foreach($professionals as $professional)
+                    <li style="border: none; margin: 10px 0px; padding: 15px 10px; border-radius: 3px; display: flex; flex-direction: row; justify-content: space-between; align-items: center; box-shadow: #ccc 0px 0px 5px;">
+                        <span style="margin-right: 20px; display: flex; flex-direction: row; justify-content: center; align-items: center; text-transform: capitalize;">{{ $professional->name }}</span>
+                        
+                        <div style="">
+                            <a href="{{ route('professionals.edit', $professional->id ) }}" class="button edit-button">Editar</a>
+                            <form action="{{ route('professionals.destroy', $professional->id) }}" method="POST" style="display: inline;">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="button btn btn-danger">Excluir</button>
+            </form>
+                        </div>
+                    </li>    
+                @endforeach
+            </ul>
+        </div>
+    </section>
+@endsection
