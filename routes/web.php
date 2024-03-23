@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\SiteController;
-use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\LoginController;
 use App\Http\Controllers\SchedulingController;
 use App\Http\Controllers\PlaceController;
 use App\Http\Controllers\ProfessionalController;
@@ -21,7 +21,6 @@ use App\Http\Controllers\ProfessionalController;
 
 
 Route::get('/', [SiteController::class, 'index'])->name('site.index');
-Route::get('/login', [LoginController::class, 'index'])->name('auth.index');
 Route::get('/scheduling', [SchedulingController::class, 'index'])->name('scheduling.index');
 Route::get('/places', [PlaceController::class, 'index'])->name('places.all');
 
@@ -45,6 +44,10 @@ Route::get('/professionals/{id}/edit', [ProfessionalController::class, 'edit'])-
 Route::put('/professionals/{id}', [ProfessionalController::class, 'update'])->name('professionals.update');
 Route::delete('/professionals/{id}', [ProfessionalController::class, 'destroy'])->name('professionals.destroy');
 
+
+// Login
+Route::view('/login','login.form')->name('login.form');
+Route::post('/auth', [LoginController::class, 'auth']) ->name('login.auth');
 
 
 

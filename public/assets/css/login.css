@@ -267,7 +267,7 @@ img {
   .input__overlay {
     width: 31px;
     height: 31px;
-    background-color: var(--container-color);
+    background-color: white;
     position: absolute;
     right: .9rem;
     margin-right: -8px;
@@ -287,7 +287,7 @@ img {
   .input__overlay {
     width: 31px;
     height: 31px;
-    background-color: var(--container-color);
+    background-color: white;
     position: absolute;
     right: .9rem;
     border-radius: 50%;
@@ -343,11 +343,11 @@ img {
 
 /* Transition effect */
 
-.overlay-content ~ .input__lock {
+.overlay-content, .input__lock {
   color: var(--container-color);
 }
 
-.overlay-content ~ .input__password,
-.overlay-content ~ .input__password::placeholder {
+.overlay-content, .input__password,
+.overlay-content, .input__password::placeholder {
   color: var(--text-color);
 }
