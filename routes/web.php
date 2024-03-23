@@ -2,22 +2,12 @@
 
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\SiteController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\SchedulingController;
 use App\Http\Controllers\PlaceController;
 use App\Http\Controllers\ProfessionalController;
-
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
-*/
 
 
 Route::get('/', [SiteController::class, 'index'])->name('site.index');
@@ -47,7 +37,10 @@ Route::delete('/professionals/{id}', [ProfessionalController::class, 'destroy'])
 
 // Login
 Route::view('/login','login.form')->name('login.form');
-Route::post('/auth', [LoginController::class, 'auth']) ->name('login.auth');
+Route::post('/auth', [LoginController::class, 'auth'])->name('login.auth');
+Route::get('/logout', [LoginController::class, 'logout'])->name('login.logout');
+
+Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
 
 
 
