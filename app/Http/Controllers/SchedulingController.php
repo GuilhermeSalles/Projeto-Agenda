@@ -47,6 +47,23 @@ class SchedulingController extends Controller
 
     public function all($date = null){
 
+        /*
+            É bom fazermos aqui uma verificação de sessão de usuário e se
+            não for um usuário verificado ou a sessão tiver acabado que redirecione o
+            usuário para fora. Na verdade vou só colocar o middleware na rota e boas. 
+            
+        */
+
+        /* Como os registros só estão sendo (e serão) visualizados por aqui
+           então só devemos aqui atualizar quais registros estão concluidos e quais não.
+           simplesmente fazer um update no mysql 
+    t      update a coluna fulfilled pra 1 em todos os registros que a date 
+           for menor que a data atual
+           isso significa que todo o registro onde a data de agendamento estiver 
+           no passado a sua coluna 'concluido' será alterada para 
+           1 = concluida
+           passos: fazer um método a parte pra fazer isso */
+
         if($date == null){
             $date = Carbon::now('America/Sao_Paulo');
         }else{
@@ -76,7 +93,7 @@ class SchedulingController extends Controller
 
 
         // Obtém todos os agendamentos
-        $schedulingsDates = Scheduling::all();
+        $schedulingsDates = Scheduling::orderBy('date')->get();
 
         // Itera sobre cada agendamento
         $schedulingsDates->map(function ($scheduling) {

@@ -6,6 +6,7 @@ use App\Http\Controllers\SiteController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\SchedulingController;
 use App\Http\Controllers\PlaceController;
+use App\Http\Controllers\ProfessionalController;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,6 +35,15 @@ Route::post('/scheduling/store', [SchedulingController::class, 'store'])->name('
 Route::post('/scheduling/cancel', [SchedulingController::class, 'cancel'])->name('scheduling.cancel');
 Route::post('/scheduling/finishe', [SchedulingController::class, 'finishe'])->name('scheduling.finishe');
 Route::post('/scheduling/reset', [SchedulingController::class, 'reset'])->name('scheduling.reset');
+
+// managing professionals
+Route::get('/professionals', [ProfessionalController::class, 'index'])->name('professionals.all');
+Route::get('/professionals/create', [ProfessionalController::class, 'create'])->name('professionals.create');
+Route::post('/professionals', [ProfessionalController::class, 'store'])->name('professionals.store');
+Route::get('/professionals/{id}', [ProfessionalController::class, 'show'])->name('professionals.show');
+Route::get('/professionals/{id}/edit', [ProfessionalController::class, 'edit'])->name('professionals.edit');
+Route::put('/professionals/{id}', [ProfessionalController::class, 'update'])->name('professionals.update');
+Route::delete('/professionals/{id}', [ProfessionalController::class, 'destroy'])->name('professionals.destroy');
 
 
 
