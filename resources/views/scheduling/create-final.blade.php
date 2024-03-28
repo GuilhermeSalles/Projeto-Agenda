@@ -83,7 +83,26 @@
 
 
         <label class="popular__name" for="time">Horário: </label>
-        <input type="time" name="time" id="time" value="13:00">
+        <select name="time" id="time">
+            <?php
+                use Carbon\Carbon;
+                
+                // Obter a data e hora atual na região de São Paulo
+                $now = Carbon::now('America/Sao_Paulo');
+                
+                // Arredondar a próxima hora com intervalos de 30 minutos no futuro
+                $roundedHour = $now->addMinutes(30 - ($now->minute % 30))->startOfHour();
+                
+                // Loop para gerar opções de hora com intervalos de 30 minutos
+                for ($hour = $roundedHour->hour; $hour <= 23; $hour++) {
+                    for ($minute = ($hour == $roundedHour->hour ? $roundedHour->minute : 0); $minute < 60; $minute += 30) {
+                        $optionTime = sprintf('%02d', $hour) . ':' . sprintf('%02d', $minute);
+                        echo "<option value=\"$optionTime\">$optionTime</option>";
+                    }
+                }
+            ?>
+        </select>
+
 
         <br>
 
