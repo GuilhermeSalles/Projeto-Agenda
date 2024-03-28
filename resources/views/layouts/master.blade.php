@@ -53,6 +53,8 @@
 
     <link rel="stylesheet" href="{{ asset('assets/css/styles.css') }}">
 
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
     <title>Barbearia TG</title>
 </head>
 

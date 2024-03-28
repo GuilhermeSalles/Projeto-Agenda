@@ -12,6 +12,8 @@
                         <span style="margin-right: 20px; display: flex; flex-direction: row; justify-content: center; align-items: center; text-transform: capitalize;">{{ $professional->name }}</span>
                         
                         <div style="">
+                        <a href="{{ route('professionals.show', $professional->id ) }}" class="button see-button">Ver</a>
+
                             <a href="{{ route('professionals.edit', $professional->id ) }}" class="button edit-button">Editar</a>
                             <form action="{{ route('professionals.destroy', $professional->id) }}" method="POST" style="display: inline;">
                 @csrf

@@ -44,13 +44,23 @@
 
             <div class="worked-days">
                 
-                <ul id="ul-calendar">
-                    @foreach($uniqueDates as $scheduledDate)
-                        <li>
-                            <a class="button" href="{{ route('scheduling.all', $scheduledDate['date']) }}">{{ $scheduledDate['date']->format('d/m/Y') }} </a>
-                        </li>
-                    @endforeach
-                </ul>   
+            <select id="ul-calendar">
+                @foreach($uniqueDates as $scheduledDate)
+                    <option value="{{ route('scheduling.all', $scheduledDate['date']) }}">{{ $scheduledDate['date']->format('d/m/Y') }}</option>
+                @endforeach
+            </select>
+
+            
+            <script>
+                $(document).ready(function(){
+                    $('#ul-calendar').change(function(){
+                        var selectedUrl = $(this).val();
+                        window.location.href = selectedUrl; // Redirecionar para a URL selecionada
+                    });
+                });
+            </script>
+
+
 
                 <a class="button" href="{{ route('scheduling.all') }}">Hoje</a>
             </div>

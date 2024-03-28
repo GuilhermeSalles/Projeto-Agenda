@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Professional;
 
+use App\Models\Service;
+
+
 class ProfessionalController extends Controller
 {
     /**
@@ -54,6 +57,9 @@ class ProfessionalController extends Controller
     public function show($id)
     {
         $professional = Professional::findOrFail($id);
+        $services = $professional->specializations;
+        $services = Service::whereIn('id', $services)->get();
+        $professional->services = $services;
         return view('professionals.show', compact('professional'));
     }
 
@@ -66,7 +72,14 @@ class ProfessionalController extends Controller
     public function edit($id)
     {
         $professional = Professional::findOrFail($id);
-        return view('professionals.edit', compact('professional'));
+        // Obtenha os IDs dos serviços especializados do profissional
+$serviceIds = $professional->specializations;
+
+// Agora você pode buscar os serviços correspondentes aos IDs
+$proServices = Service::whereIn('id', $serviceIds)->get();
+
+        $services = Service::all();
+        return view('professionals.edit', compact('professional', 'services', 'proServices'));
     }
 
     /**
@@ -78,15 +91,34 @@ class ProfessionalController extends Controller
      */
     public function update(Request $request, $id)
     {
+        // Valide os dados recebidos do formulário
         $request->validate([
             'name' => 'required|string|max:255',
+            'services' => 'nullable|array', // Permitir que o campo seja um array
         ]);
-
+    
+        // Busque o profissional pelo ID
         $professional = Professional::findOrFail($id);
-        $professional->update($request->all());
-
+    
+        // Atualize o nome do profissional
+        $professional->name = $request->input('name');
+    
+        // Verifique se o campo "services" está presente no request
+        if ($request->has('services')) {
+            // Se sim, atualize a coluna "specializations" com os serviços selecionados
+            $professional->specializations = json_encode($request->input('services'));
+        } else {
+            // Se não, defina a coluna "specializations" como nula
+            $professional->specializations = null;
+        }
+    
+        // Salve as alterações no banco de dados
+        $professional->save();
+    
+        // Redirecione para a página de detalhes do profissional com uma mensagem de sucesso
         return redirect()->route('professionals.show', $professional->id)->with('success', 'Detalhes do profissional atualizados com sucesso!');
     }
+    
 
     /**
      * Remove um profissional específico do banco de dados.
