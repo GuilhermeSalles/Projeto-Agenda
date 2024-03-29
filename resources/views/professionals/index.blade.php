@@ -5,7 +5,7 @@
 @section('content')
     <section class="dad-div section">
         <div class="container">
-            <a href="{{ route('professionals.create') }}" class="button">Criar Profissional</a>
+            <a href="{{ route('professionals.create') }}" class="button">Criar Profissional - Novo</a>
             <ul>
                 @foreach($professionals as $professional)
                     <li style="border: none; margin: 10px 0px; padding: 15px 10px; border-radius: 3px; display: flex; flex-direction: row; justify-content: space-between; align-items: center; box-shadow: #ccc 0px 0px 5px;">
