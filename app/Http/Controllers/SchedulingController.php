@@ -22,7 +22,7 @@ class SchedulingController extends Controller
 
         foreach ($professionals as $professional) {
             // Decodifica a string JSON em um array
-            $specializedServiceIds = json_decode($professional->specializations);
+            $specializedServiceIds = $professional->specializations;
         
             // Obtém os serviços especializados com os IDs obtidos
             $services = Service::whereIn('id', $specializedServiceIds)->get();
@@ -152,7 +152,7 @@ class SchedulingController extends Controller
 
         $professionals = Professional::all();
 
-        $specializedServiceIds = json_decode($professional->specializations);
+        $specializedServiceIds = $professional->specializations;
 
         $services = Service::whereIn('id', $specializedServiceIds)->get();
 

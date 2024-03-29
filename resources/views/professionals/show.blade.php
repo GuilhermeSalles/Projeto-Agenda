@@ -13,6 +13,10 @@
                     <!-- Adicione outros detalhes do profissional conforme necessário -->
                 </div>
             </div>
+
+            @foreach ($professional->services as $service)
+                {{ $service->name }}<br>
+            @endforeach
             <a href="{{ route('professionals.edit', $professional->id) }}" class="btn btn-primary">Editar</a>
             <form action="{{ route('professionals.destroy', $professional->id) }}" method="POST" style="display: inline;">
                 @csrf
