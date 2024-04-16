@@ -846,7 +846,8 @@ body.dark-theme {
 
   .about__data,
   .about .section__subtitle,
-  .about .section__title {
+  .about .section__title,
+  .professional {
     text-align: initial;
   }
 

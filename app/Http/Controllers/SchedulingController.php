@@ -203,7 +203,7 @@ class SchedulingController extends Controller
         $scheduling->save();
 
         // Redirecione de volta para a página de origem com uma mensagem de sucesso
-        return redirect()->back()->with('success', 'Agendamento criado com sucesso!');
+        return view('scheduling.finishing');
         //return view('scheduling.create');
 
     }
