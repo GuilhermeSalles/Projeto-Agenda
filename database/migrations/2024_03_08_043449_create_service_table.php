@@ -9,12 +9,12 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
         Schema::create('services', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('description');
+            $table->string('description')->nullable(); // Alterando para aceitar valores nulos
             $table->decimal('duration', 5, 2)->nullable();
             $table->decimal('value', 10, 2)->nullable();
             $table->timestamps();

@@ -92,6 +92,11 @@
                         <a href="{{ route('professionals.all') }}" class="nav__link">Profissionais</a>
                     </li>
 
+                    <li class="nav__item">
+                        <a href="{{ route('services.all') }}" class="nav__link">Services</a>
+                    </li>
+
+
                     <!-- Close button -->
                     <div class="nav__close" id="nav-close">
                         <i class="ri-close-line"></i>

@@ -7,6 +7,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\SchedulingController;
 use App\Http\Controllers\PlaceController;
 use App\Http\Controllers\ProfessionalController;
+use App\Http\Controllers\ServiceController;
 
 /*
 |--------------------------------------------------------------------------
@@ -44,6 +45,17 @@ Route::get('/professionals/{id}', [ProfessionalController::class, 'show'])->name
 Route::get('/professionals/{id}/edit', [ProfessionalController::class, 'edit'])->name('professionals.edit');
 Route::put('/professionals/{id}', [ProfessionalController::class, 'update'])->name('professionals.update');
 Route::delete('/professionals/{id}', [ProfessionalController::class, 'destroy'])->name('professionals.destroy');
+
+
+// managing services
+Route::get('/services', [ServiceController::class, 'index'])->name('services.all');
+Route::get('/services/create', [ServiceController::class, 'create'])->name('services.create');
+Route::get('/services/{id}/edit', [ServiceController::class, 'edit'])->name('services.edit');
+Route::post('/services', [ServiceController::class, 'store'])->name('services.store');
+Route::put('/services/{id}', [ServiceController::class, 'update'])->name('services.update');
+Route::delete('/services/{id}', [ServiceController::class, 'destroy'])->name('services.destroy');
+
+
 
 
 
