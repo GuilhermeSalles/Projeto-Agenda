@@ -29,25 +29,35 @@
             </div>
 
             <div class="login__forms">
-                <form action="/login" method="POST" class="login__registre" id="login-in">
+
+
+
+                <form action="{{ route('auth.login') }}" method="POST" class="login__registre" id="login-in">
+                    @csrf
                     <h1 class="login__title">Acesso restrito</h1>
+
+                    @if (session('error'))
+                        <div class="alert alert-danger" role="alert">
+                            {{ session('error') }}
+                        </div>
+                    @endif
 
                     <div class="login__box">
                         <i class='bx bx-user login__icon'></i>
-                        <input type="text" name="login" placeholder="Usuário" class="login__input">
+                        <input type="text" name="email" placeholder="Usuário" class="login__input">
                     </div>
 
                     <div class="login__box input">
                         <div class="input__overlay" id="input-overlay"></div>
                         <i class='bx bx-lock-alt login__icon'></i>
-                        <input type="password" name="password" placeholder="Senha" class="login__input input__password" id="input-pass">
+                        <input type="text" name="password" placeholder="Senha" class="login__input input__password" id="input-pass">
                         <i class='bx bx-hide input__icon' id="input-icon"></i>
                     </div>
 
                     <a href="#" class="login__forgot">Esqueceu a senha?</a>
 
 
-                    <a href="#" class="login__button">Entrar</a>
+                    <button type="submit" class="login__button">Entrar</button>
 
                     <div>
                         <span class="login__account">Quer entrar com google ?</span>
