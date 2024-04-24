@@ -22,7 +22,16 @@ use App\Http\Controllers\ServiceController;
 
 
 Route::get('/', [SiteController::class, 'index'])->name('site.index');
+
+
+
 Route::get('/login', [LoginController::class, 'index'])->name('auth.index');
+Route::post('/login', [LoginController::class, 'login'])->name('auth.login');
+Route::post('/logout', [LoginController::class, 'logout'])->name('auth.logout');
+Route::get('/hash-it/{pass}', [LoginController::class, 'hash']);
+
+
+
 Route::get('/scheduling', [SchedulingController::class, 'index'])->name('scheduling.index');
 Route::get('/places', [PlaceController::class, 'index'])->name('places.all');
 
