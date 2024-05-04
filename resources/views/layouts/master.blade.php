@@ -84,49 +84,6 @@
                         <a href="{{ route('scheduling.index') }}" class="nav__link">Agendar</a>
                     </li>
 
-                    <!-- No seu arquivo blade -->
-                    <li class="nav__item">
-                        @if (Auth::check())
-
-                        <li class="dropdown">
-                            <button class="dropbtn nav__link">Gerenciar</button>
-                            <ul class="dropdown-content hidden">
-                                <li class="nav__item">
-                                    <a href="{{ route('scheduling.all') }}" class="nav__link">Agendamentos</a>
-                                </li>
-                                <li class="nav__item">
-                                    <a href="{{ route('professionals.all') }}" class="nav__link">Profissionais</a>
-                                </li>
-                                <li class="nav__item">
-                                    <a href="{{ route('services.all') }}" class="nav__link">Services</a>
-                                </li>
-                            </ul>
-                            </li>
-
-                        <script>
-                            document.addEventListener("DOMContentLoaded", function() {
-                                var dropdown = document.querySelector('.dropdown');
-                                dropdown.addEventListener('click', function() {
-                                    var dropdownContent = this.querySelector('.dropdown-content');
-                                    dropdownContent.classList.toggle('show');
-                                });
-                            });
-                        </script>
-
-
-
-
-                            <form id="logout-form" action="{{ route('auth.logout') }}" method="POST">
-                                @csrf
-                                <input style="background-color: transparent; " type="submit" class="nav__link" value='Logout' >
-                            </form>
-                        @else
-                            <a href="{{ route('auth.index') }}" class="nav__link">Login</a>
-                        @endif
-                    </li>
-
-
-
 
                     <!-- Close button -->
                     <div class="nav__close" id="nav-close">

@@ -15,49 +15,53 @@
     <link href='https://cdn.jsdelivr.net/npm/boxicons@2.0.5/css/boxicons.min.css' rel='stylesheet'>
 
     <link rel="icon" type="image/x-icon" href="{{ asset('assets/img/favicon.ico') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/login.css') }}">
+
 </head>
 
 <body>
     <!-- ===== CSS ===== -->
-    <link rel="stylesheet" href="{{ asset('assets/css/login.css') }}">
     <div class="login">
         <div class="login__content">
             <div class="login__img">
 
-                <img src="{{ asset('assets/img/login/fundo.png') }}" class="pequeno" style="margin-bottom: 40px; width: 502px;" alt="">
+                <img src="{{ asset('assets/img/login/fundo.png') }}" class="pequeno"
+                    style="margin-bottom: 40px; width: 502px;" alt="">
 
             </div>
 
             <div class="login__forms">
-
-
-
-                <form action="{{ route('auth.login') }}" method="POST" class="login__registre" id="login-in">
+                <form action="{{ route('login.auth') }}" method="POST" class="login__registre" id="login-in">
                     @csrf
                     <h1 class="login__title">Acesso restrito</h1>
+                    @if ($mensagem = Session::get('erro'))
+                        <h4 class="login__account">{{ $mensagem }}</h4>
+                    @endif
 
-                    @if (session('error'))
-                        <div class="alert alert-danger" role="alert">
-                            {{ session('error') }}
-                        </div>
+                    @if ($errors->any())
+                        @foreach ($errors->all() as $error)
+                            <h4 class="login__account">{{ $error }}</h4>
+                        @endforeach
+
                     @endif
 
                     <div class="login__box">
                         <i class='bx bx-user login__icon'></i>
-                        <input type="text" name="email" placeholder="Usuário" class="login__input">
+                        <input type="email" name="email" placeholder="Email" class="login__input">
                     </div>
+
 
                     <div class="login__box input">
                         <div class="input__overlay" id="input-overlay"></div>
                         <i class='bx bx-lock-alt login__icon'></i>
-                        <input type="text" name="password" placeholder="Senha" class="login__input input__password" id="input-pass">
+                        <input type="password" name="password" placeholder="Senha" class="login__input input__password"
+                            id="input-pass">
                         <i class='bx bx-hide input__icon' id="input-icon"></i>
                     </div>
-
                     <a href="#" class="login__forgot">Esqueceu a senha?</a>
 
+                    <button type="submit" class="login__button" style="width: 100%; display: block;">Entrar</button>
 
-                    <button type="submit" class="login__button">Entrar</button>
 
                     <div>
                         <span class="login__account">Quer entrar com google ?</span>
@@ -68,8 +72,27 @@
             </div>
         </div>
     </div>
+    
     <!--===== MAIN JS =====-->
     <script src="{{ asset('assets/js/login.js') }}"></script>
+
+    <script>
+        document.getElementById("input-icon").addEventListener("click", function() {
+            var passwordInput = document.getElementById("input-pass");
+            var icon = document.getElementById("input-icon");
+            
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                icon.classList.remove("bx-hide");
+                icon.classList.add("bx-show");
+            } else {
+                passwordInput.type = "password";
+                icon.classList.remove("bx-show");
+                icon.classList.add("bx-hide");
+            }
+        });
+    </script>
+    
 </body>
 
 </html>

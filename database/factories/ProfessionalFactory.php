@@ -18,7 +18,7 @@ class ProfessionalFactory extends Factory
     {
         return [
             'name' => $this->faker->unique()->word, // vai criar nomes aleatórios
-            'specializations' => json_encode([$this->faker->randomNumber(2)]),
+            'specializations' => json_encode($this->faker->unique()->randomElements(range(1, 15), $this->faker->numberBetween(1, 10))),
         ];
     }
 }

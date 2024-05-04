@@ -13,6 +13,7 @@ class DatabaseSeeder extends Seeder
         ProfessionalWorkingSeeder::class,
         ServiceSeeder::class,
         SchedulingSeeder::class,
+        UserSeeder::class,
        ]);
     }
 }

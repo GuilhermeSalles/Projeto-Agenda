@@ -2,8 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\SiteController;
-use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\LoginController;
 use App\Http\Controllers\SchedulingController;
 use App\Http\Controllers\PlaceController;
 use App\Http\Controllers\ProfessionalController;
@@ -22,15 +23,6 @@ use App\Http\Controllers\ServiceController;
 
 
 Route::get('/', [SiteController::class, 'index'])->name('site.index');
-
-
-
-Route::get('/login', [LoginController::class, 'index'])->name('auth.index');
-Route::post('/login', [LoginController::class, 'login'])->name('auth.login');
-Route::post('/logout', [LoginController::class, 'logout'])->name('auth.logout');
-Route::get('/hash-it/{pass}', [LoginController::class, 'hash']);
-
-
 
 Route::get('/scheduling', [SchedulingController::class, 'index'])->name('scheduling.index');
 Route::get('/places', [PlaceController::class, 'index'])->name('places.all');
@@ -65,9 +57,12 @@ Route::put('/services/{id}', [ServiceController::class, 'update'])->name('servic
 Route::delete('/services/{id}', [ServiceController::class, 'destroy'])->name('services.destroy');
 
 
+// Login
+Route::view('/login','login.form')->name('login.form');
+Route::post('/auth', [LoginController::class, 'auth']) ->name('login.auth');
 
 
-
+Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
 
 
 
