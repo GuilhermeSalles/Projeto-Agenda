@@ -20,6 +20,7 @@ Route::get('/scheduling/create/{id}/service/{service_id}', [SchedulingController
 Route::get('/scheduling/all/{date?}', [SchedulingController::class, 'all'])->name('scheduling.all');
 
 Route::post('/scheduling/store', [SchedulingController::class, 'store'])->name('scheduling.store');
+
 // proteger a seguinte rota com o middleware do login do gerente: 
 Route::post('/scheduling/cancel', [SchedulingController::class, 'cancel'])->name('scheduling.cancel');
 Route::post('/scheduling/finishe', [SchedulingController::class, 'finishe'])->name('scheduling.finishe');

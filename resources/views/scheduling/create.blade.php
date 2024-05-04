@@ -6,10 +6,6 @@
 
 @section('content')
     <style>
-        .scheduling-form{
-
-        }
-
 
         .scheduling-form hr{
             display: block;
@@ -42,7 +38,7 @@
         <hr>
         <br><br>
 
-        <h1>{{ $professional->name }}</h1>
+        <h1>Quem vai cortar: {{ $professional->name }}</h1>
 
         <br>
 
