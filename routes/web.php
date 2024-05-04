@@ -60,7 +60,7 @@ Route::delete('/services/{id}', [ServiceController::class, 'destroy'])->name('se
 // Login
 Route::view('/login','login.form')->name('login.form');
 Route::post('/auth', [LoginController::class, 'auth']) ->name('login.auth');
-
+Route::get('/logout', [LoginController::class, 'logout'])->name('login.logout');
 
 Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
 
