@@ -83,6 +83,9 @@
                     <li class="nav__item">
                         <a href="{{ route('scheduling.index') }}" class="nav__link">Agendar</a>
                     </li>
+                    <li class="nav__item">
+                        <a href="{{ route('login.form') }}" class="nav__link">Login</a>
+                    </li>
 
 
                     <!-- Close button -->
