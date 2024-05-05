@@ -1,7 +1,7 @@
 @extends('admin.master')
 @extends('admin.get-status-form')
 
-@section('title', 'DashBoard')
+@section('title', 'Services')
 
 @section('content')
 
@@ -9,15 +9,16 @@
 <div class="container">
     <div class="section">
         <div class="content">
-            <h2>DASHBOARD</h2>
+            <h2>SERVICES</h2>
         </div>
     </div>
 </div>
 
+
 <div class="container">
     <div class="section">
         <div class="content">
-            AGENDAMENTO ALL
+            SERVICES AQUI
         </div>
     </div>
 </div>

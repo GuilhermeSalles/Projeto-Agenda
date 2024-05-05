@@ -72,29 +72,24 @@
 
             <div class="nav__list">
 
-                <a wm-nav="{{ route('admin.dashboard') }}" class="nav__link active-link">
+                <a href="{{ route('admin.dashboard') }}" class="nav__link {{ Request::is('admin/dashboard') ? 'active-link' : '' }}">
                     <i class='bx bx-grid-alt'></i>
                     <span class="nav__name">Dashboard</span>
                 </a>
-
-                <a wm-nav="/table" class="nav__link">
+                
+                <a href="{{ route('admin.profissionais') }}" class="nav__link {{ Request::is('admin/profissionais') ? 'active-link' : '' }}">
                     <i class='bx bx-download'></i>
                     <span class="nav__name">Profissionais</span>
                 </a>
-
-                <a wm-nav="/registration" class="nav__link">
+                
+                <a href="{{ route('admin.services') }}" class="nav__link {{ Request::is('admin/services') ? 'active-link' : '' }}">
                     <i class='bx bx-book-add'></i>
                     <span class="nav__name">Serviços</span>
                 </a>
-
+                
                 <a class="nav__link">
                     <i class='bx bx-moon' id="theme-button"></i>
                     <span class="nav__name">Tema</span>
-                </a>
-
-                <a wm-nav="/settings" class="nav__link configuration">
-                    <i class='bx bx-cog'></i>
-                    <span class="nav__name">Configurações</span>
                 </a>
 
                 <a href="{{ route('login.logout') }}" class="nav__link logout">

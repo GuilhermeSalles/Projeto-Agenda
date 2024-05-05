@@ -344,3 +344,36 @@ body.dark-theme {
   font-weight: bold;
   letter-spacing: 1px;
 }
+
+
+.container {
+  position: relative; /* Garante que o posicionamento relativo funcione */
+  max-width: 1200px; /* Defina a largura máxima do container */
+  margin: 0 auto; /* Isso centralizará o container horizontalmente */
+  padding: 2px; /* Adicione padding para espaçamento interno */
+  background-color: var(--color-container); /* Adicione a cor de fundo */
+  border-radius: 10px; /* Adicione cantos arredondados */
+}
+
+
+@media screen and (min-width: 768px) {
+  .container {
+    margin-top: 1rem;
+    padding-left: 120px; /* Ajuste o padding para acomodar o menu lateral */
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .container {
+    margin: 1.3rem;
+    padding-left: 1.25; /* Remova o padding para dispositivos móveis */
+  }
+}
+
+
+.content {
+  position: absolute; /* Posicionamento absoluto em relação ao container */
+  top: 50%; /* Centraliza verticalmente */
+  left: 50%; /* Centraliza horizontalmente */
+  transform: translate(-50%, -50%); /* Move o conteúdo de volta metade de sua própria largura e altura */
+}

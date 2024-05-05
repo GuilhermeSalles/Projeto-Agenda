@@ -64,6 +64,8 @@ Route::post('/auth', [LoginController::class, 'auth']) ->name('login.auth');
 Route::get('/logout', [LoginController::class, 'logout'])->name('login.logout');
 
 Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard')->middleware('auth');
+Route::get('/admin/services', [DashboardController::class, 'services'])->name('admin.services')->middleware('auth');
+Route::get('/admin/profissionais', [DashboardController::class, 'prof'])->name('admin.profissionais')->middleware('auth');
 
 
 
