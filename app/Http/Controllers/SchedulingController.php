@@ -16,36 +16,38 @@ use App\Models\Scheduling;
 
 class SchedulingController extends Controller
 {
-    public function index(Request $request){
-        
+    public function index(Request $request)
+    {
+
         $professionals = Professional::all();
 
         foreach ($professionals as $professional) {
             // Decodifica a string JSON em um array
             $specializedServiceIds = $professional->specializations;
-        
+
             // Obtém os serviços especializados com os IDs obtidos
             $services = Service::whereIn('id', $specializedServiceIds)->get();
-        
+
             // Define os serviços especializados como um atributo do objeto profissional
             $professional->services = $services;
-        
+
             // Obtém os dias trabalhados do profissional
             $workingHours = $professional->workingHours;
-        
+
             // Resuma os dias trabalhados em um único atributo de texto
             $workingDays = $workingHours->pluck('day_of_week')->implode(', ');
-        
+
             // Define os dias trabalhados como um atributo do objeto profissional
             $professional->workingDays = $workingDays;
         }
-        
+
         $schedulings = Scheduling::all();
 
         return view('scheduling.index', compact('schedulings', 'professionals'));
     }
 
-    public function all($date = null){
+    public function all($date = null)
+    {
 
         /*
             É bom fazermos aqui uma verificação de sessão de usuário e se
@@ -64,15 +66,15 @@ class SchedulingController extends Controller
            1 = concluida
            passos: fazer um método a parte pra fazer isso */
 
-        if($date == null){
+        if ($date == null) {
             $date = Carbon::now('America/Sao_Paulo');
-        }else{
-            $date = Carbon::parse($date); 
+        } else {
+            $date = Carbon::parse($date);
         }
 
         // $date = ($date == null) ? Carbon::now('America/Sao_Paulo') : $date;
 
-       
+
 
         $schedulings = Scheduling::whereDate('date', $date->format('Y-m-d'))->get();
 
@@ -80,11 +82,11 @@ class SchedulingController extends Controller
 
         $soma = 0;
 
-        foreach($schedulings as $scheduling){
+        foreach ($schedulings as $scheduling) {
 
-            if($scheduling->fulfilled == 1){
-                foreach($services as $service){
-                    if($service->id == $scheduling->service){
+            if ($scheduling->fulfilled == 1) {
+                foreach ($services as $service) {
+                    if ($service->id == $scheduling->service) {
                         $soma += $service->value;
                     }
                 }
@@ -118,21 +120,21 @@ class SchedulingController extends Controller
         $uniqueDates = $schedulingsGroupedByDate;
 
         $dates = [];
-        foreach($uniqueDates as $udDate => $schedulingsDates){
+        foreach ($uniqueDates as $udDate => $schedulingsDates) {
             //$udDate = Carbon::parse($udDate);
 
             $valueSum = 0;
 
-            foreach($schedulingsDates as $dated){
+            foreach ($schedulingsDates as $dated) {
 
-                if($dated->fulfilled == 1){
+                if ($dated->fulfilled == 1) {
                     $valueSum += $dated->value;
                 }
             }
 
 
             $schedulingAndDates = ['date' => Carbon::parse($udDate), 'total' => $valueSum];
-    
+
             array_push($dates, $schedulingAndDates);
         }
 
@@ -142,13 +144,14 @@ class SchedulingController extends Controller
 
         $date = ($date->format('Y-m-d') == Carbon::now('America/Sao_Paulo')->format('Y-m-d')) ? null : $date;
 
-        return view('scheduling.all', compact('schedulings', 'soma', 'uniqueDates','date'));
+        return view('scheduling.all', compact('schedulings', 'soma', 'uniqueDates', 'date'));
     }
 
 
-    public function create($id){
+    public function create($id)
+    {
 
-      $professional = Professional::find($id);
+        $professional = Professional::find($id);
 
         $professionals = Professional::all();
 
@@ -157,20 +160,19 @@ class SchedulingController extends Controller
         $services = Service::whereIn('id', $specializedServiceIds)->get();
 
         return view('scheduling.create', compact('professional', 'professionals', 'services'));
-    
     }
 
-    public function createSelectService($id, $service_id){
+    public function createSelectService($id, $service_id)
+    {
         $professional = Professional::find($id);
         $service = Service::find($service_id);
 
         return view('scheduling.create-final', compact('professional',  'service'));
-    
     }
 
 
     public function store(Request $request)
-    {         
+    {
         // Valide os dados recebidos do formulário
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
@@ -181,14 +183,14 @@ class SchedulingController extends Controller
             'time' => 'required|date_format:H:i',
         ]);
 
-            // Verificar se há erros de validação
-            if ($validatedData instanceof \Illuminate\Contracts\Validation\Validator && $validatedData->fails()) {
-                // Dados inválidos, notifique o usuário do erro
-                return redirect()->back()->withErrors($validatedData)->withInput();
-            } else {
-                // Dados válidos, continue com o processamento
-                // Por exemplo, salve os dados no banco de dados
-            }
+        // Verificar se há erros de validação
+        if ($validatedData instanceof \Illuminate\Contracts\Validation\Validator && $validatedData->fails()) {
+            // Dados inválidos, notifique o usuário do erro
+            return redirect()->back()->withErrors($validatedData)->withInput();
+        } else {
+            // Dados válidos, continue com o processamento
+            // Por exemplo, salve os dados no banco de dados
+        }
 
         // Crie um novo agendamento com os dados validados
         $scheduling = new Scheduling();
@@ -198,17 +200,20 @@ class SchedulingController extends Controller
         $scheduling->service = $validatedData['service'];
         $scheduling->date = $validatedData['date'];
         $scheduling->time = $validatedData['time'];
-        
+
         // Salve o agendamento no banco de dados
         $scheduling->save();
 
-        // Redirecione de volta para a página de origem com uma mensagem de sucesso
-        return view('scheduling.finishing');
-        //return view('scheduling.create');
+        // Obter os dados do profissional e do serviço
+        $professional = Professional::find($request->input('pro'));
+        $service = Service::find($request->input('service'));
 
+        // Passar os dados do agendamento, profissional e serviço para a view
+        return view('scheduling.finishing', compact('scheduling', 'professional', 'service'));
     }
 
-    public function cancel(Request $request){
+    public function cancel(Request $request)
+    {
 
         // Valida os dados da requisição
         $request->validate([
@@ -228,7 +233,8 @@ class SchedulingController extends Controller
         return redirect()->back();
     }
 
-    public function finishe(Request $request){
+    public function finishe(Request $request)
+    {
         // Valida os dados da requisição
         $request->validate([
             'id' => 'required|integer',
@@ -248,11 +254,12 @@ class SchedulingController extends Controller
     }
 
 
-    
-    public function reset(Request $request){
+
+    public function reset(Request $request)
+    {
         // Valida os dados da requisição
         $request->validate([
-        'id' => 'required|integer',
+            'id' => 'required|integer',
         ]);
 
         // Encontra o agendamento pelo ID
@@ -267,5 +274,4 @@ class SchedulingController extends Controller
 
         return redirect()->back();
     }
-
 }
