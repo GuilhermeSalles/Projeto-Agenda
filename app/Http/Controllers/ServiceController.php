@@ -16,6 +16,7 @@ class ServiceController extends Controller
     {
         // Listagem de todos os serviços
         $services = Service::all();
+        //return view('admin.services', compact('services'));
         return view('services.index', compact('services'));
     }
 

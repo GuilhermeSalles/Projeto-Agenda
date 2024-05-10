@@ -1,11 +1,24 @@
-@extends('layouts.master')
+@extends('admin.master')
+@extends('admin.get-status-form')
 
 @section('title', 'Profissionais')
 
 @section('content')
-    <section class="dad-div section">
-        <div class="container">
-            <a href="{{ route('professionals.create') }}" class="button">Criar Profissional - Novo</a>
+
+<br>
+<div class="container">
+    <div class="section">
+        <div class="content">
+            <h2>PROFISSIONAIS</h2>
+        </div>
+    </div>
+</div>
+
+
+<div class="container">
+    <div class="section">
+        
+        <a href="{{ route('professionals.create') }}" class="button">Criar Profissional - Novo</a>
             <ul>
                 @foreach($professionals as $professional)
                     <li style="border: none; margin: 10px 0px; padding: 15px 10px; border-radius: 3px; display: flex; flex-direction: row; justify-content: space-between; align-items: center; box-shadow: #ccc 0px 0px 5px;">
@@ -24,6 +37,8 @@
                     </li>    
                 @endforeach
             </ul>
-        </div>
-    </section>
+       
+    </div>
+</div>
+
 @endsection

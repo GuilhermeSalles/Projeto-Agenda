@@ -66,6 +66,8 @@ class SchedulingController extends Controller
 
         if($date == null){
             $date = Carbon::now('America/Sao_Paulo');
+
+            echo $date;
         }else{
             $date = Carbon::parse($date); 
         }
