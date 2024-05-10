@@ -141,31 +141,42 @@
 
                         <div class="coolinput">
                             <label for="">Data</label>
-                            <input type="date" name="date" id="date" value="{{ now()->format('Y-m-d') }}">
+                            <input type="date" name="date" id="date" value="{{ now('America/Sao_Paulo')->format('Y-m-d') }}">
                         </div>
 
                         <div class="coolinput">
-                            <label for="">Horário</label>
-                            <select name="time" id="time">
-                                <?php
-                                use Carbon\Carbon;
-                                
-                                // Obter a data e hora atual na região de São Paulo
-                                $now = Carbon::now('America/Sao_Paulo');
-                                
-                                // Arredondar a próxima hora com intervalos de 30 minutos no futuro
-                                $roundedHour = $now->addMinutes(30 - ($now->minute % 30))->startOfHour();
-                                
-                                // Loop para gerar opções de hora com intervalos de 30 minutos
-                                for ($hour = $roundedHour->hour; $hour <= 23; $hour++) {
-                                    for ($minute = $hour == $roundedHour->hour ? $roundedHour->minute : 0; $minute < 60; $minute += 30) {
-                                        $optionTime = sprintf('%02d', $hour) . ':' . sprintf('%02d', $minute);
-                                        echo "<option value=\"$optionTime\">$optionTime</option>";
-                                    }
-                                }
-                                ?>
-                            </select>
-                        </div>
+    <label for="">Horário</label>
+    <select name="time" id="time">
+        <?php
+        use Carbon\Carbon;
+        
+        // Obter a data e hora atual na região de São Paulo
+        $now = Carbon::now('America/Sao_Paulo');
+        
+        // Arredondar a próxima hora com intervalos de 30 minutos no futuro
+        $roundedHour = $now->addMinutes(30 - ($now->minute % 30))->startOfHour();
+        
+        // Lista de horários proibidos
+        $forbiddenTimes = ['23:30']; 
+        
+        // Loop para gerar opções de hora com intervalos de 30 minutos
+        for ($hour = $roundedHour->hour; $hour <= 23; $hour++) {
+            for ($minute = $hour == $roundedHour->hour ? $roundedHour->minute : 0; $minute < 60; $minute += 30) {
+                $optionTime = sprintf('%02d', $hour) . ':' . sprintf('%02d', $minute);
+                
+                // Verifica se o horário está na lista de proibidos
+                if (!in_array($optionTime, $forbiddenTimes)) {
+                    echo "<option value=\"$optionTime\">$optionTime</option>";
+                }else{
+                    echo "<option disabled value=\"$optionTime\">$optionTime</option>";
+
+                }
+            }
+        }
+        ?>
+    </select>
+</div>
+
 
                         <div class="form-group text-center">
                             <button class="button" type="submit"> <i class="ri-calendar-check-line"></i>

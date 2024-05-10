@@ -65,11 +65,11 @@ class SchedulingController extends Controller
            no passado a sua coluna 'concluido' será alterada para 
            1 = concluida
            passos: fazer um método a parte pra fazer isso */
-
-        if ($date == null) {
+        if($date == null){
             $date = Carbon::now('America/Sao_Paulo');
-        } else {
-            $date = Carbon::parse($date);
+            echo $date;
+        }else{
+            $date = Carbon::parse($date); 
         }
 
         // $date = ($date == null) ? Carbon::now('America/Sao_Paulo') : $date;
