@@ -5,6 +5,7 @@
 
 @section('content')
 
+
 <br>
 <div class="container">
     <div class="section">
@@ -57,7 +58,7 @@
                     
                 <select id="ul-calendar">
                     @foreach($uniqueDates as $scheduledDate)
-                        <option value="{{ route('scheduling.all', $scheduledDate['date']) }}"  {{ $date == $scheduledDate['date'] ? 'selected' : '' }}>    {{ $scheduledDate['date']->format('d/m/Y') }}</option>
+                        <option value="{{ route('scheduling.all', $scheduledDate['date']) }}"  <?php echo ($date == $scheduledDate['date']) ? 'selected' : ''; ?>>    {{ $scheduledDate['date']->format('d/m/Y') }}</option>
                     @endforeach
                 </select>
 
@@ -73,7 +74,7 @@
 
 
 
-                    <a class="button" href="{{ route('scheduling.all') }}">Hoje</a>
+                    <a class="button btn btn-primary" href="{{ route('scheduling.all') }}">Hoje</a>
                 </div>
 
 

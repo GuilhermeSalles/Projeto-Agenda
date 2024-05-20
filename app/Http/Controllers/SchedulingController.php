@@ -66,15 +66,9 @@ class SchedulingController extends Controller
 
         if($date == null){
             $date = Carbon::now('America/Sao_Paulo');
-
-            echo $date;
         }else{
             $date = Carbon::parse($date); 
         }
-
-        // $date = ($date == null) ? Carbon::now('America/Sao_Paulo') : $date;
-
-       
 
         $schedulings = Scheduling::whereDate('date', $date->format('Y-m-d'))->get();
 
@@ -92,7 +86,6 @@ class SchedulingController extends Controller
                 }
             }
         }
-
 
         // Obtém todos os agendamentos
         $schedulingsDates = Scheduling::orderBy('date')->get();
