@@ -18,6 +18,23 @@
                 Seu horario já foi agendado. Com sucesso. Não se atrase!! Obrigado.
             </p>
 
+
+            <h3 class="professional"><i class="ri-user-2-fill"></i> Profissional: {{ $professional->name }}</h3>
+            @include('layouts.get-status-form')
+
+            <div class="popular__container container grid">
+                <article class="popular__card">
+                    <img src="{{ asset('assets/img/favicon.png') }}" alt="popula image" class="popular__img">
+                    <h2 class="popular__name">{{ $service->name }}</h2>
+                    <span class="popular__description">Corte apenas</span>
+                    <span class="popular__price">R$ {{ $service->value }}</span>
+                </article>
+            </div>
+
+            <br><br>
+            <input type="hidden" name="pro" value="{{ $professional->id }}">
+            <input type="hidden" name="service" value="{{ $service->id }}">
+
         </section>
     </main>
 
