@@ -17,46 +17,21 @@
 
 <div class="container">
     <div class="section">
-        <style>
-        .worked-days{
-
-        }
-
-        .worked-days a{
-            padding:
-        }
-
-        .dad-div div{
-            display: flex;
-            flex-direction: row;
-            justify-content: center;
-
-        }
-
-
-
-
-        #ul-calendar{
-            max-height: 300px;
-            overflow-y: scroll;
-        }
-
-    </style>
 
     <section class="dad-div section">
         <span class="section__subtitle">Agendamentos</span>
             <h2 class="section__title">Gerencie: </h2>
         <!--==================== WHO ====================-->
 
-        <div>
+    
         <section class="who section" id="who">
         
 
-            <ul class="container">
+            <ul class="default-list scheduling-list">
 
                 <div class="worked-days">
                     
-                <select id="ul-calendar">
+                <select id="schedule-date-select" class="default-select ">
                     @foreach($uniqueDates as $scheduledDate)
                         <option value="{{ route('scheduling.all', $scheduledDate['date']) }}"  <?php echo ($date == $scheduledDate['date']) ? 'selected' : ''; ?>>    {{ $scheduledDate['date']->format('d/m/Y') }}</option>
                     @endforeach
@@ -65,7 +40,7 @@
                 
                 <script>
                     $(document).ready(function(){
-                        $('#ul-calendar').change(function(){
+                        $('#schedule-date-select').change(function(){
                             var selectedUrl = $(this).val();
                             window.location.href = selectedUrl; // Redirecionar para a URL selecionada
                         });
@@ -196,7 +171,7 @@
         </section>
             </div>
     </section>
-    </div>
+    
 </div>
 
 @endsection
