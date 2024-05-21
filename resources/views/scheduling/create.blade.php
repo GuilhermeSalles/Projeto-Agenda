@@ -6,8 +6,11 @@
 
 @section('content')
     <style>
+<<<<<<< HEAD
         .scheduling-form {}
 
+=======
+>>>>>>> views
 
         .scheduling-form hr {
             display: block;
@@ -42,7 +45,19 @@
         <a href="{{ URL::previous() }}" class="button voltar">
             <i class="ri-arrow-left-line"></i>
         </a>
+<<<<<<< HEAD
         <h3 class="professional"><i class="ri-user-2-fill"></i> Profissional: {{ $professional->name }}</h3>
+=======
+
+        <br><br>
+        <hr>
+        <br><br>
+
+        <h1>Quem vai cortar: {{ $professional->name }}</h1>
+
+        <br>
+
+>>>>>>> views
         <div class="popular__container container grid">
             @foreach ($services as $service)
                 <article class="popular__card">

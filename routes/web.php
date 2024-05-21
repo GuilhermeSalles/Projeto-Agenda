@@ -11,20 +11,12 @@ use App\Http\Controllers\ProfessionalController;
 use App\Http\Controllers\ServiceController;
 use Illuminate\Support\Facades\Auth;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
-*/
-
 
 Route::get('/', [SiteController::class, 'index'])->name('site.index');
+<<<<<<< HEAD
 
+=======
+>>>>>>> views
 Route::get('/scheduling', [SchedulingController::class, 'index'])->name('scheduling.index');
 Route::get('/places', [PlaceController::class, 'index'])->name('places.all');
 
@@ -34,6 +26,7 @@ Route::get('/scheduling/create/{id}/service/{service_id}', [SchedulingController
 Route::get('/scheduling/all/{date?}', [SchedulingController::class, 'all'])->name('scheduling.all');
 
 Route::post('/scheduling/store', [SchedulingController::class, 'store'])->name('scheduling.store');
+
 // proteger a seguinte rota com o middleware do login do gerente: 
 Route::post('/scheduling/cancel', [SchedulingController::class, 'cancel'])->name('scheduling.cancel');
 Route::post('/scheduling/finishe', [SchedulingController::class, 'finishe'])->name('scheduling.finishe');
@@ -49,6 +42,7 @@ Route::put('/professionals/{id}', [ProfessionalController::class, 'update'])->na
 Route::delete('/professionals/{id}', [ProfessionalController::class, 'destroy'])->name('professionals.destroy');
 
 
+<<<<<<< HEAD
 // managing services
 Route::get('/services', [ServiceController::class, 'index'])->name('services.all');
 Route::get('/services/create', [ServiceController::class, 'create'])->name('services.create');
@@ -66,6 +60,16 @@ Route::get('/logout', [LoginController::class, 'logout'])->name('login.logout');
 Route::get('/admin/dashboard/{date?}', [SchedulingController::class, 'all'])->name('admin.dashboard')->middleware('auth');
 Route::get('/admin/services', [ServiceController::class, 'index'])->name('admin.services')->middleware('auth');
 Route::get('/admin/profissionais', [ProfessionalController::class, 'index'])->name('admin.profissionais')->middleware('auth');
+=======
+// Login
+Route::view('/login','login.form')->name('login.form');
+Route::post('/auth', [LoginController::class, 'auth'])->name('login.auth');
+Route::get('/logout', [LoginController::class, 'logout'])->name('login.logout');
+
+Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
+
+
+>>>>>>> views
 
 
 

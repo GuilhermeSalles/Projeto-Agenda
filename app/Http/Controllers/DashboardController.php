@@ -10,6 +10,7 @@ class DashboardController extends Controller
     public function index() {
         return view('admin.dashboard');
     }
+<<<<<<< HEAD
     public function services() {
         return view('admin.services');
     }
@@ -17,3 +18,6 @@ class DashboardController extends Controller
         return view('admin.profissionais');
     }
 }
+=======
+}
+>>>>>>> views

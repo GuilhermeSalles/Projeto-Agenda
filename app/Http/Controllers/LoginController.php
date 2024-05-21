@@ -36,4 +36,8 @@ class LoginController extends Controller
         $request->session()->regenerateToken();
         return redirect(route('site.index'));
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> views
