@@ -13,10 +13,7 @@ use Illuminate\Support\Facades\Auth;
 
 
 Route::get('/', [SiteController::class, 'index'])->name('site.index');
-<<<<<<< HEAD
 
-=======
->>>>>>> views
 Route::get('/scheduling', [SchedulingController::class, 'index'])->name('scheduling.index');
 Route::get('/places', [PlaceController::class, 'index'])->name('places.all');
 
@@ -42,7 +39,6 @@ Route::put('/professionals/{id}', [ProfessionalController::class, 'update'])->na
 Route::delete('/professionals/{id}', [ProfessionalController::class, 'destroy'])->name('professionals.destroy');
 
 
-<<<<<<< HEAD
 // managing services
 Route::get('/services', [ServiceController::class, 'index'])->name('services.all');
 Route::get('/services/create', [ServiceController::class, 'create'])->name('services.create');
@@ -60,7 +56,7 @@ Route::get('/logout', [LoginController::class, 'logout'])->name('login.logout');
 Route::get('/admin/dashboard/{date?}', [SchedulingController::class, 'all'])->name('admin.dashboard')->middleware('auth');
 Route::get('/admin/services', [ServiceController::class, 'index'])->name('admin.services')->middleware('auth');
 Route::get('/admin/profissionais', [ProfessionalController::class, 'index'])->name('admin.profissionais')->middleware('auth');
-=======
+
 // Login
 Route::view('/login','login.form')->name('login.form');
 Route::post('/auth', [LoginController::class, 'auth'])->name('login.auth');
@@ -69,7 +65,6 @@ Route::get('/logout', [LoginController::class, 'logout'])->name('login.logout');
 Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
 
 
->>>>>>> views
 
 
 
