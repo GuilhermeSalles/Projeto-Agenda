@@ -62,4 +62,52 @@
   .button:hover i {
     transform: translateX(.25rem);
   }
+
+
+  .button button{
+    color: #fff;
+    background-color: transparent;
+    border: none;
+    font-weight: var(--font-medium);
+    font-size: 15px;
+  }
+
+
+
+
+  /* default list */
+  .default-list{
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: start;
+  }
+
+
+  /* default select */
+
+  .default-select{
+    width: 200px;
+    height: fit-content;
+    padding: 15px 10px;
+  }
+
+
+
+  /* scheduling screen */
+
+  .worked-days{
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+
+  .worked-days a{
+
+  }
+
   
