@@ -81,12 +81,12 @@
                 </a>
                 
                 <a href="{{ route('admin.profissionais') }}" class="nav__link {{ Request::is('admin/profissionais') ? 'active-link' : '' }}">
-                    <i class='bx bx-download'></i>
+                    <i class='bx bx-user-plus'></i>
                     <span class="nav__name">Profissionais</span>
                 </a>
                 
                 <a href="{{ route('admin.services') }}" class="nav__link {{ Request::is('admin/services') ? 'active-link' : '' }}">
-                    <i class='bx bx-book-add'></i>
+                    <i class='bx bx-clinic'></i>
                     <span class="nav__name">Serviços</span>
                 </a>
                 

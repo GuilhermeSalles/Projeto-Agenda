@@ -70,9 +70,8 @@
     border: none;
     font-weight: var(--font-medium);
     font-size: 15px;
+    
   }
-
-
 
 
   /* default list */
@@ -106,8 +105,33 @@
     margin-bottom: 20px;
   }
 
-  .worked-days a{
 
+/* menu */
+
+@media (max-width: 768px) {
+  /* Garante que o menu fique fixo no topo */
+  .nav {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 1000; /* Garante que o menu fique acima de outros elementos */
   }
 
-  
+
+  /* Ajustes gerais para garantir que os botões não sobreponham o menu */
+  .button, .professional-actions .button {
+      font-size: 12px; /* Ajuste o tamanho da fonte conforme necessário */
+      padding: 6px 10px; /* Ajuste o preenchimento conforme necessário */
+  }
+
+  .button.create-button {
+      margin-top: 10px; /* Adiciona espaço acima do botão de criar */
+  }
+}
+
+
+/* Tabela */
+.bcontainer {
+  text-align: center
+}
+
