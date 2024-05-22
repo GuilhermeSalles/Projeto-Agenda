@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 @extends('admin.master')
 @extends('admin.get-status-form')
 
@@ -200,6 +199,3 @@
 </div>
 
 @endsection
-=======
-<h1>Olá {{ auth()->user()->firstName }} {{ auth()->user()->lastName }} </h1>
->>>>>>> views

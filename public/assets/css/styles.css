@@ -13,6 +13,7 @@
   --text-color: hsl(19, 16%, 65%);
   --body-color: hsl(19, 12%, 8%);
   --container-color: hsl(19, 10%, 10%);
+  --whatsapp-color: #25D366; /* WhatsApp Green */
   
 
   /*========== Font and typography ==========*/
@@ -35,6 +36,13 @@
   /*========== z index ==========*/
   --z-tooltip: 10;
   --z-fixed: 100;
+}
+
+.whatsapp-button .button {
+  background-color: var(--whatsapp-color);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 @media screen and (min-width: 1024px) {
