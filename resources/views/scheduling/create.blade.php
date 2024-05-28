@@ -6,9 +6,6 @@
 
 @section('content')
     <style>
-        .scheduling-form {}
-
-
         .scheduling-form hr {
             display: block;
             margin: 20px 0px;
@@ -27,7 +24,8 @@
         .professional {
             text-align: center;
         }
-        .voltar{
+
+        .voltar {
             padding: 1rem;
             margin-left: 1.25rem;
         }
@@ -35,14 +33,23 @@
 
 
     <!--==================== WHO ====================-->
-    <section class="who section" id="who">
+    <section class="who section">
         <span class="section__subtitle">Agendar</span>
         <h2 class="section__title"> Selecione o serviço que deseja agendar</h2>
 
         <a href="{{ URL::previous() }}" class="button voltar">
             <i class="ri-arrow-left-line"></i>
         </a>
+
         <h3 class="professional"><i class="ri-user-2-fill"></i> Profissional: {{ $professional->name }}</h3>
+
+
+        <br><br>
+        <hr>
+        <br><br>
+
+        <br>
+
         <div class="popular__container container grid">
             @foreach ($services as $service)
                 <article class="popular__card">

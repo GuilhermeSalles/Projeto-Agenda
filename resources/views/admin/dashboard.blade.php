@@ -5,197 +5,267 @@
 
 @section('content')
 
-<br>
-<div class="container">
-    <div class="section">
-        <div class="content">
-            <h2>DASHBOARD</h2>
+    <br>
+    <div class="container">
+        <div class="section">
+            <div class="content">
+                <h2>DASHBOARD</h2>
+            </div>
         </div>
     </div>
-</div>
 
-<div class="container">
-    <div class="section">
-        <style>
-        .worked-days{
+    <div class="container">
+        <div class="section">
+            <style>
+                .worked-days {
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: center;
+                    align-items: center;
+                    margin-bottom: 20px;
+                }
 
-        }
+                .worked-days select {
+                    border: 1px solid #ccc;
+                    border-radius: 10px;
+                    padding: 10px;
+                    margin-right: 10px;
+                }
 
-        .worked-days a{
-            padding:
-        }
+                .worked-days a {
+                    background-color: var(--first-color);
+                    color: #fff;
+                    padding: 10px 20px;
+                    border-radius: 10px;
+                    text-decoration: none;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
 
-        .dad-div div{
-            display: flex;
-            flex-direction: row;
-            justify-content: center;
+                #ul-calendar {
+                    max-height: 300px;
+                    overflow-y: scroll;
+                }
 
-        }
+                .whatsapp-button {
+                    background-color: var(--whatsapp-color);
+                    color: #fff;
+                    padding: 10px 20px;
+                    border-radius: 10px;
+                    text-decoration: none;
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    margin-top: 20px;
+                }
 
+                .whatsapp-button i {
+                    margin-right: 8px;
+                }
 
+                .agendamentos-list {
+                    border: none;
+                    margin: 10px 0px;
+                    padding: 15px 10px;
+                    border-radius: 10px;
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: space-between;
+                    align-items: center;
+                    box-shadow: #ccc 0px 0px 5px;
+                }
 
+                .dropdown {
+                    position: relative;
+                    display: inline-block;
+                }
 
-        #ul-calendar{
-            max-height: 300px;
-            overflow-y: scroll;
-        }
+                .dropdown-toggle {
+                    background-color: #d4823a;
+                    color: #fff;
+                    padding: 10px 20px;
+                    border: none;
+                    cursor: pointer;
+                    border-radius: .5rem;
+                }
 
-    </style>
+                .dropdown-menu {
+                    display: none;
+                    position: absolute;
+                    background-color: #fff;
+                    border-radius: .5rem;
+                    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+                    z-index: 1;
+                    max-width: 100%;
+                }
 
-    <section class="dad-div section">
-        <span class="section__subtitle">Agendamentos</span>
-            <h2 class="section__title">Gerencie: </h2>
-        <!--==================== WHO ====================-->
+                .dropdown-item {
+                    border-radius: 5px;
+                    color: #333;
+                    padding: 12px 16px;
+                    text-decoration: none;
+                    display: block;
+                }
 
-        <div>
-        <section class="who section" id="who">
-        
+                .dropdown-item:hover {
+                    background-color: #d4823a;
+                }
 
-            <ul class="container">
+                .dropdown:hover .dropdown-menu {
+                    display: block;
+                }
 
+                #chart-container {
+                    width: 100%;
+                    height: auto;
+                }
+            </style>
+
+            <section class="dad-div section">
+                <!-- Centralize os títulos -->
+                <div style="text-align: center;">
+                    <span class="section__subtitle">Agendamentos</span>
+                    <br>
+                    <br>
+                </div>
+
+                <!-- Select para dias de trabalho -->
                 <div class="worked-days">
-                    
-                <select id="ul-calendar">
-                    @foreach($uniqueDates as $scheduledDate)
-                        <option value="{{ route('scheduling.all', $scheduledDate['date']) }}"  {{ $date == $scheduledDate['date'] ? 'selected' : '' }}>    {{ $scheduledDate['date']->format('d/m/Y') }}</option>
-                    @endforeach
-                </select>
+                    <select id="ul-calendar" onchange="location = this.value;">
+                        @foreach ($uniqueDates as $scheduledDate)
+                            <option value="{{ route('scheduling.all', $scheduledDate['date']->format('Y-m-d')) }}"
+                                {{ $date && $date->isSameDay($scheduledDate['date']) ? 'selected' : '' }}>
+                                {{ $scheduledDate['date']->format('d/m/Y') }}
+                            </option>
+                        @endforeach
+                    </select>
 
-                
+                    <a class="button" href="{{ route('scheduling.all', ['date' => now()->format('Y-m-d')]) }}">Hoje</a>
+                </div>
+
+                <!-- Saldo -->
+                <h2 style="text-align: center;">Saldo de {{ $date == null ? 'hoje' : $date->format('d/m/Y') }}: <b>R$
+                        {{ number_format($soma, 2, ',', '.') }}</b></h2>
+
+                <!-- Lista de agendamentos -->
+                <ul class="container">
+                    @foreach ($schedulings as $scheduling)
+                        <li class="agendamentos-list">
+                            <span>{{ $scheduling->name }}</span>
+                            <span>{{ $scheduling->service }}</span>
+                            <span>{{ $scheduling->date }}</span>
+
+                            <div class="dropdown">
+                                <button class="dropdown-toggle">Ações</button>
+                                <div class="dropdown-menu">
+                                    @switch($scheduling->fulfilled)
+                                        @case(0)
+                                            <form method="POST" action="{{ route('scheduling.cancel') }}">
+                                                @csrf
+                                                <input type='hidden' name="id" value="{{ $scheduling->id }}">
+                                                <button type="submit" class="dropdown-item">Cancelar</button>
+                                            </form>
+
+                                            <form method="POST" action="{{ route('scheduling.finishe') }}">
+                                                @csrf
+                                                <input type='hidden' name="id" value="{{ $scheduling->id }}">
+                                                <button type="submit" class="dropdown-item">Concluir</button>
+                                            </form>
+                                        @break
+
+                                        @case(1)
+                                            <span class="dropdown-item">Concluído</span>
+
+                                            <form method="POST" action="{{ route('scheduling.reset') }}">
+                                                @csrf
+                                                <input type='hidden' name="id" value="{{ $scheduling->id }}">
+                                                <button type="submit" class="dropdown-item">Reabrir</button>
+                                            </form>
+                                        @break
+
+                                        @case(2)
+                                            <span class="dropdown-item">Cancelado</span>
+
+                                            <form method="POST" action="{{ route('scheduling.reset') }}">
+                                                @csrf
+                                                <input type='hidden' name="id" value="{{ $scheduling->id }}">
+                                                <button type="submit" class="dropdown-item">Reabrir</button>
+                                            </form>
+                                        @break
+
+                                        @default
+                                            <span class="dropdown-item">Algo deu errado, por favor tente novamente!</span>
+                                    @endswitch
+                                </div>
+                            </div>
+                        </li>
+                    @endforeach
+                </ul>
+            </section>
+
+            <!-- Gráfico com Chart.js -->
+            <section>
+                <div id="chart-container">
+                    <canvas id="chart_div"></canvas>
+                </div>
                 <script>
-                    $(document).ready(function(){
-                        $('#ul-calendar').change(function(){
-                            var selectedUrl = $(this).val();
-                            window.location.href = selectedUrl; // Redirecionar para a URL selecionada
+                    document.addEventListener('DOMContentLoaded', function() {
+                        var ctx = document.getElementById('chart_div').getContext('2d');
+                        var dataValueArray = @json($uniqueDates);
+
+                        var data = {
+                            labels: dataValueArray.map(function(pair) {
+                                return new Date(pair.date).toLocaleDateString();
+                            }),
+                            datasets: [{
+                                label: 'Valores',
+                                data: dataValueArray.map(function(pair) {
+                                    return pair.total;
+                                }),
+                                backgroundColor: 'rgba(216, 122, 79, 0.5)',
+                                borderColor: 'rgba(21, 123, 79, 0.2)',
+                                borderWidth: 1
+                            }]
+                        };
+
+                        var options = {
+                            responsive: true,
+                            scales: {
+                                x: {
+                                    type: 'time',
+                                    time: {
+                                        unit: 'day',
+                                        tooltipFormat: 'DD/MM/YYYY'
+                                    },
+                                    title: {
+                                        display: true,
+                                        text: 'Data'
+                                    }
+                                },
+                                y: {
+                                    title: {
+                                        display: true,
+                                        text: 'Valor (R$)'
+                                    },
+                                    ticks: {
+                                        callback: function(value) {
+                                            return 'R$ ' + value.toFixed(2).replace('.', ',');
+                                        }
+                                    }
+                                }
+                            }
+                        };
+
+                        var chart = new Chart(ctx, {
+                            type: 'line',
+                            data: data,
+                            options: options
                         });
                     });
                 </script>
-
-
-
-                    <a class="button" href="{{ route('scheduling.all') }}">Hoje</a>
-                </div>
-
-
-
-                <h1>Saldo de {{ $date == null ? 'hoje' : $date->format('d/m/Y') }}: <b>R$ {{ $soma }}</b></h1>
-                
-                @foreach($schedulings as $scheduling)
-                    <li class="">
-
-
-                        <span class="">{{ $scheduling->name }}</span>
-
-                        <span class="">
-                            {{ $scheduling->service }}
-                        </span>
-
-                        <span class="">{{ $scheduling->date }}</span>
-
-                        @switch($scheduling->fulfilled)
-                                @case(0)
-                            <form method="POST" action="{{ route('scheduling.cancel') }}" class="button">
-                                @csrf
-                                <input type='hidden' name="id" value="{{ $scheduling->id }}">
-                                <button>Cancelar<i class="ri-arrow-right-circle-line"></i></button>
-                            </form>
-
-                            <form method="POST" action="{{ route('scheduling.finishe') }}" class="button">
-                                @csrf
-                                <input type='hidden' name="id" value="{{ $scheduling->id }}">
-                                <button>Concluir<i class="ri-arrow-right-circle-line"></i></button>
-                            </form>
-                        @break
-                            @case(1)
-                                Concluido
-
-                                <form method="POST" action="{{ route('scheduling.reset') }}" class="button">
-                                @csrf
-                                <input type='hidden' name="id" value="{{ $scheduling->id }}">
-                                <button>Reabrir<i class="ri-arrow-right-circle-line"></i></button>
-                            </form>
-                            @break
-
-                            @case(2)
-                                Cancelado
-                                
-                                <form method="POST" action="{{ route('scheduling.reset') }}" class="button">
-                                @csrf
-                                <input type='hidden' name="id" value="{{ $scheduling->id }}">
-                                <button>Reabrir<i class="ri-arrow-right-circle-line"></i></button>
-                                </form>
-                            @break
-
-                            @default
-                                Algo deu errado, por favor tente novamente!
-                        @endswitch
-
-                        </li>
-                @endforeach
-            </ul>
-
-        </section>
-
-        <?php
-
-            // brincando de estatisticas 
-
-            $datesArray = $uniqueDates;
-
-            // Inicializa um array para armazenar os dados de data e valor
-            $dataValueArray = [];
-
-            // Itera sobre os objetos Carbon no array
-            foreach ($datesArray as $carbonDate) {
-                // Extrai a data no formato desejado
-                $data = $carbonDate["date"];
-                
-                // Crie um valor fictício ou substitua pelo valor que desejar
-                $valor =  $carbonDate["total"];
-
-                // Adiciona a data e o valor ao array
-                $dataValueArray[] = [$data, $valor];
-            }
-
-            // Agora $dataValueArray contém os pares de data e valor no formato desejado
-        ?>
-
-        <section>
-            <div id="chart_div" style="width: 100%; height: 400px;"></div>
-            <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-            <script type="text/javascript">
-                google.charts.load('current', {'packages':['corechart']});
-                google.charts.setOnLoadCallback(drawChart);
-
-                function drawChart() {
-                    var data = new google.visualization.DataTable();
-                    data.addColumn('date', 'Data');
-                    data.addColumn('number', 'Valor');
-
-                    // Seu vetor de data e valor PHP
-                    var dataValueArray = <?php echo json_encode($dataValueArray); ?>;
-
-                    // Converter cada par de data e valor para o formato esperado pelo Google Charts
-                    dataValueArray.forEach(function(pair) {
-                        pair[0] = new Date(pair[0]);
-                    });
-
-                    // Adicionar os dados ao DataTable
-                    data.addRows(dataValueArray);
-
-                    var options = {
-                        title: 'Gráfico de Barras de Exemplo',
-                        legend: { position: 'bottom' }
-                    };
-
-                    var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
-                    chart.draw(data, options);
-                }
-            </script>
-        </section>
-            </div>
-    </section>
+            </section>
+        </div>
     </div>
-</div>
 
 @endsection

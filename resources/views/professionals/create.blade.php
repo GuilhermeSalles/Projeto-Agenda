@@ -3,8 +3,8 @@
 @section('title', 'Novo Profissional')
 
 @section('content')
-    <section class="dad-div section">
-        <div class="container">
+    <section class="dad-div section" style="display: flex; justify-content: center; align-items: center;">
+        <div class="form-container">
             <h1>Criar Novo Profissional</h1>
             <form action="{{ route('professionals.store') }}" method="POST">
                 @csrf

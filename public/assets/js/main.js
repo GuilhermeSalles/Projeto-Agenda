@@ -109,8 +109,8 @@ const sr = ScrollReveal({
     delay: 400,
     // reset: true //Animation repeat
 })
-sr.reveal('.home__img, .footer__logo, .footer__description, .footer__content, .footer__info');
+sr.reveal('.home__img, .footer__logo, .footer__description, .footer__content, .footer__info, .whatsapp-button');
 sr.reveal('.home__data', {origin: 'bottom'});
-sr.reveal('.about__data', {origin: 'left'});
+sr.reveal('.about__data, .store', {origin: 'left'});
 sr.reveal('.about__iframe', {origin: 'right'});
 sr.reveal('.popular__card', {interval: 100});

@@ -359,7 +359,6 @@ body.dark-theme {
 @media screen and (min-width: 768px) {
   .container {
     margin-top: 1rem;
-    padding-left: 120px; /* Ajuste o padding para acomodar o menu lateral */
   }
 }
 
@@ -369,7 +368,6 @@ body.dark-theme {
     padding-left: 1.25; /* Remova o padding para dispositivos móveis */
   }
 }
-
 
 .content {
   position: absolute; /* Posicionamento absoluto em relação ao container */
