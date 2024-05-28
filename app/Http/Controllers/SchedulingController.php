@@ -91,8 +91,10 @@ class SchedulingController extends Controller
     {
         $professional = Professional::find($id);
         $service = Service::find($service_id);
+       // $schedulings = Scheduling::where('pro', $id)->get();
+        $schedulings = Scheduling::where('pro', $id)->with('services')->get();
 
-        return view('scheduling.create-final', compact('professional', 'service'));
+        return view('scheduling.create-final', compact('professional',  'service', 'schedulings'));
     }
 
     public function store(Request $request)
