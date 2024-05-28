@@ -145,7 +145,7 @@
                         </div>
 
                         <div class="coolinput">
-    <label for="">Horário</label>
+    <label for="">Horário </label>
     <?php
 // Crie um array associativo para mapear os horários dos agendamentos
 $schedulingTimes = [];
@@ -155,17 +155,27 @@ foreach ($schedulings as $scheduling) {
     $schedulingTimes[$formattedTime] = $formattedTime;
 
     // Obtenha a duração do serviço como um float
-$durationFloat = $scheduling->services->duration;
-
-// Converta para minutos inteiros
+    $durationFloat = $scheduling->services->duration;
     $durationInt = (int)($durationFloat);
-    var_dump($durationInt);
+
+    $timesPerHour = $durationInt/60;
+
+    //echo $timesPerHour . " _" . ceil($timesPerHour) + 2 .  " - {$durationInt}<br>";
+//
+    $startedTime = $formattedTime;
+    for($i = 0; $i < (($timesPerHour < 1) ? 1 : ceil($timesPerHour) + 3); $i++){
+        $newTime = date('H:i', strtotime($startedTime . ' +  30 minutes'));
+        $schedulingTimes[$newTime] = $newTime;
+        $startedTime = $newTime;
+        //echo "<br> foram: ". (($timesPerHour < 1) ? 1 : ceil($timesPerHour) + 2) . " {$newTime}<br>";
+    }
+
     $endTime = date('H:i', strtotime($formattedTime . ' + ' . $durationInt . ' minutes'));
     $schedulingTimes[$endTime] = $endTime;
 
     // /var_dump($scheduling->services->duration);
 }
-var_dump($schedulingTimes);
+//var_dump($schedulingTimes);
 
 ?>
 
