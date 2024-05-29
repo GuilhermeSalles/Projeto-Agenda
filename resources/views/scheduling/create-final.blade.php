@@ -147,94 +147,70 @@
                         <div class="coolinput">
     <label for="">Horário </label>
     <?php
-// Crie um array associativo para mapear os horários dos agendamentos
-$schedulingTimes = [];
-foreach ($schedulings as $scheduling) {
-    // Converta o formato "00:00:00" para "00:00"
-    $formattedTime = substr($scheduling->time, 0, 5);
-    $schedulingTimes[$formattedTime] = $formattedTime;
+        // Crie um array associativo para mapear os horários dos agendamentos
+        $schedulingTimes = [];
+        foreach ($schedulings as $scheduling) {
+            // Converta o formato "00:00:00" para "00:00"
+            $formattedTime = substr($scheduling->time, 0, 5);
+            $schedulingTimes[$formattedTime] = $formattedTime;
 
-    // Obtenha a duração do serviço como um float
-    $durationFloat = $scheduling->services->duration;
-    $durationInt = (int)($durationFloat);
+            // Obtenha a duração do serviço como um float
+            $durationFloat = $scheduling->services->duration;
+            $durationInt = (int)($durationFloat);
 
-    $timesPerHour = $durationInt/60;
+            $timesPerHour = $durationInt/60;
 
-    //echo $timesPerHour . " _" . ceil($timesPerHour) + 2 .  " - {$durationInt}<br>";
-//
-    $startedTime = $formattedTime;
-    for($i = 0; $i < (($timesPerHour < 1) ? 1 : ceil($timesPerHour) + 3); $i++){
-        $newTime = date('H:i', strtotime($startedTime . ' +  30 minutes'));
-        $schedulingTimes[$newTime] = $newTime;
-        $startedTime = $newTime;
-        //echo "<br> foram: ". (($timesPerHour < 1) ? 1 : ceil($timesPerHour) + 2) . " {$newTime}<br>";
-    }
-
-    $endTime = date('H:i', strtotime($formattedTime . ' + ' . $durationInt . ' minutes'));
-    $schedulingTimes[$endTime] = $endTime;
-
-    // /var_dump($scheduling->services->duration);
-}
-//var_dump($schedulingTimes);
-
-?>
-
-<style>
-    .scheduling {
-        color: red; /* Define a cor dos horários com agendamento */
-    }
-</style>
-
-<select>
-    <?php
-    // Itere sobre as 24 horas do dia em intervalos de 30 minutos
-    for ($hour = 0; $hour < 24; $hour++) {
-        for ($minute = 0; $minute < 60; $minute += 30) {
-            // Formate a hora e os minutos como "HH:MM"
-            $time = sprintf('%02d:%02d', $hour, $minute);
-
-            // Verifique se há um agendamento para o horário atual
-            if (isset($schedulingTimes[$time])) {
-                echo "<option value='$time' disabled>$time - agendado</option>";
-            } else {
-                echo "<option value='$time'>$time</option>";
+            $startedTime = $formattedTime;
+            for($i = 0; $i < (($timesPerHour < 1) ? 1 : ceil($timesPerHour) + 3); $i++){
+                $newTime = date('H:i', strtotime($startedTime . ' +  30 minutes'));
+                $schedulingTimes[$newTime] = $newTime;
+                $startedTime = $newTime;
             }
-        }
-    }
-    ?>
-</select>
-    
-    <select name="time" id="time">
-        <?php
-       
-        use Carbon\Carbon;
-        
-        // Obter a data e hora atual na região de São Paulo
-        $now = Carbon::now('America/Sao_Paulo');
-        
-        // Arredondar a próxima hora com intervalos de 30 minutos no futuro
-        $roundedHour = $now->addMinutes(30 - ($now->minute % 30))->startOfHour();
-        
-        // Lista de horários proibidos
-        $forbiddenTimes = ['23:30']; 
-        
-        // Loop para gerar opções de hora com intervalos de 30 minutos
-        for ($hour = $roundedHour->hour; $hour <= 23; $hour++) {
-            for ($minute = $hour == $roundedHour->hour ? $roundedHour->minute : 0; $minute < 60; $minute += 30) {
-                $optionTime = sprintf('%02d', $hour) . ':' . sprintf('%02d', $minute);
-                
-                // Verifica se o horário está na lista de proibidos
-                if (!in_array($optionTime, $forbiddenTimes)) {
-                    echo "<option value=\"$optionTime\">$optionTime</option>";
-                }else{
-                    echo "<option disabled value=\"$optionTime\">$optionTime</option>";
 
+            $endTime = date('H:i', strtotime($formattedTime . ' + ' . $durationInt . ' minutes'));
+            $schedulingTimes[$endTime] = $endTime;
+
+            
+        }
+
+    ?>
+
+    <style>
+        .scheduling {
+            color: red; /* Define a cor dos horários com agendamento */
+        }
+    </style>
+
+    <select name="time" id="time">
+
+    
+        <?php
+
+use Carbon\Carbon;
+            
+// Obter a data e hora atual na região de São Paulo
+$now = Carbon::now('America/Sao_Paulo');
+
+// Arredondar a próxima hora com intervalos de 30 minutos no futuro
+$roundedHour = $now->addMinutes(30 - ($now->minute % 30))->startOfHour();
+
+        // Itere sobre as 24 horas do dia em intervalos de 30 minutos
+        for ($hour = $roundedHour->hour; $hour < 24; $hour++) {
+            for ($minute = 0; $minute < 60; $minute += 30) {
+                // Formate a hora e os minutos como "HH:MM"
+                $time = sprintf('%02d:%02d', $hour, $minute);
+
+                // Verifique se há um agendamento para o horário atual
+                if (isset($schedulingTimes[$time])) {
+                    echo "<option value='$time' disabled>$time - agendado</option>";
+                } else {
+                    echo "<option value='$time'>$time</option>";
                 }
             }
         }
         ?>
     </select>
-</div>
+    </div>
 
 
                         <div class="form-group text-center">
