@@ -2,30 +2,24 @@
 
 namespace Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
-
-use App\Models\ProfessionalWorkingHour;
+use App\Models\Scheduling;
+use App\Models\Professional;
 use App\Models\Service;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Scheduling>
- */
 class SchedulingFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
-    public function definition(): array
+    protected $model = Scheduling::class;
+
+    public function definition()
     {
-        $professionalIds = ProfessionalWorkingHour::pluck('id')->toArray();
+        $professionalIds = Professional::pluck('id')->toArray();
         $serviceIds = Service::pluck('id')->toArray();
 
-        // Definindo um intervalo de datas dentro dos próximos 12 meses
-        $startDate = Carbon::now();
-        $endDate = Carbon::now()->addMonths(12);
+        // Define o intervalo de datas entre 29/05/2024 e 31/05/2024
+        $startDate = Carbon::create(2024, 5, 28);
+        $endDate = Carbon::create(2024, 6, 4);
 
         return [
             'name' => $this->faker->name,
