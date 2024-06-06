@@ -139,10 +139,30 @@
                         <br>
                         <hr class="style-eight">
 
+                        <?php
+
+use Carbon\Carbon;
+            ?>
+
                         <div class="coolinput">
                             <label for="">Data</label>
-                            <input type="date" name="date" id="date" value="{{ now('America/Sao_Paulo')->format('Y-m-d') }}">
+                            <input type="date" name="date" id="date" value="{{ Carbon::parse($date)->format('Y-m-d') }}">
                         </div>
+
+                        <script>
+    document.getElementById('date').addEventListener('change', function() {
+        const date = this.value;
+        const id = '<?php echo $id; ?>'; // Substitua pelo ID apropriado
+        const service_id = '<?php echo $service_id; ?>'; // Substitua pelo ID do serviço apropriado
+
+        const url = `/scheduling/create/${id}/service/${service_id}?date=${date}`;
+        
+        // Recarregar a página com a nova URL
+        window.location.href = url;
+    });
+</script>
+
+
 
                         <div class="coolinput">
     <label for="">Horário </label>
@@ -156,12 +176,13 @@
 
             // Obtenha a duração do serviço como um float
             $durationFloat = $scheduling->services->duration;
-            $durationInt = (int)($durationFloat);
-
-            $timesPerHour = $durationInt/60;
+            $durationInt = (int)($durationFloat) - 1 ;
+            
+            $timesPerHour = $durationInt/60 ;
+            
 
             $startedTime = $formattedTime;
-            for($i = 0; $i < (($timesPerHour < 1) ? 1 : ceil($timesPerHour) + 3); $i++){
+            for($i = 0  ; $i < (($timesPerHour < 1) ? 1 : ceil($timesPerHour) + 1); $i++){
                 $newTime = date('H:i', strtotime($startedTime . ' +  30 minutes'));
                 $schedulingTimes[$newTime] = $newTime;
                 $startedTime = $newTime;
@@ -185,11 +206,10 @@
 
     
         <?php
-
-use Carbon\Carbon;
-            
+    
 // Obter a data e hora atual na região de São Paulo
 $now = Carbon::now('America/Sao_Paulo');
+$now = Carbon::parse('2024-06-05 11:23:21');
 
 // Arredondar a próxima hora com intervalos de 30 minutos no futuro
 $roundedHour = $now->addMinutes(30 - ($now->minute % 30))->startOfHour();

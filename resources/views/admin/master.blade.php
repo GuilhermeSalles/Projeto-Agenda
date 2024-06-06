@@ -88,6 +88,11 @@
                 <a href="{{ route('admin.services') }}" class="nav__link {{ Request::is('admin/services') ? 'active-link' : '' }}">
                     <i class='bx bx-clinic'></i>
                     <span class="nav__name">Serviços</span>
+                </a>                
+                
+                <a href="{{ route('admin.times') }}" class="nav__link {{ Request::is('admin/times') ? 'active-link' : '' }}">
+                    <i class='bx bx-time'></i>
+                    <span class="nav__name">Horários</span>
                 </a>
                 
                 <a class="nav__link">

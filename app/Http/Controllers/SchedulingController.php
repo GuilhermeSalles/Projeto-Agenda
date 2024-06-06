@@ -87,15 +87,22 @@ class SchedulingController extends Controller
         return view('scheduling.create', compact('professional', 'professionals', 'services'));
     }
 
-    public function createSelectService($id, $service_id)
+    public function createSelectService($id, $service_id, Request $request)
     {
+        // Obtém a data da requisição ou usa a data atual se não estiver presente
+        $date = $request->query('date', Carbon::now('America/Sao_Paulo')->format('Y-m-d'));
+    
         $professional = Professional::find($id);
         $service = Service::find($service_id);
-       // $schedulings = Scheduling::where('pro', $id)->get();
-        $schedulings = Scheduling::where('pro', $id)->with('services')->get();
-
-        return view('scheduling.create-final', compact('professional',  'service', 'schedulings'));
+    
+        $schedulings = Scheduling::where('pro', $id)
+            ->whereDate('date', $date) // Certifique-se de que a coluna da data seja correta
+            ->with('services')
+            ->get();
+    
+        return view('scheduling.create-final', compact('professional', 'service', 'schedulings', 'service_id', 'id', 'date'));
     }
+    
 
     public function store(Request $request)
     {
@@ -160,5 +167,85 @@ class SchedulingController extends Controller
         $scheduling->save();
 
         return redirect()->back();
+    }
+
+    public function times(Request $request){
+        return view('scheduling.times');
+
+    }
+
+
+    public function storeHours(Request $request)
+    {
+        // Valide os dados
+        $request->validate([
+            'opening_time' => 'required|date_format:H:i',
+            'closing_time' => 'required|date_format:H:i',
+        ]);
+
+        // Salve os dados no banco de dados
+        // Implemente a lógica para armazenar horas de funcionamento
+        // ...
+
+        return redirect()->back()->with('success', 'Horas de funcionamento salvas com sucesso!');
+    }
+
+    public function storeDays(Request $request)
+    {
+        // Valide os dados
+        $request->validate([
+            'day_of_week' => 'required|string',
+        ]);
+
+        // Salve os dados no banco de dados
+        // Implemente a lógica para armazenar dias da semana
+        // ...
+
+        return redirect()->back()->with('success', 'Dias da semana salvos com sucesso!');
+    }
+
+    public function storeOffDays(Request $request)
+    {
+        // Valide os dados
+        $request->validate([
+            'off_days' => 'required|array',
+            'off_days.*' => 'date',
+        ]);
+
+        // Salve os dados no banco de dados
+        // Implemente a lógica para armazenar folgas
+        // ...
+
+        return redirect()->back()->with('success', 'Folgas salvas com sucesso!');
+    }
+
+    public function storeVacation(Request $request)
+    {
+        // Valide os dados
+        $request->validate([
+            'vacation_start' => 'required|date',
+            'vacation_end' => 'required|date',
+        ]);
+
+        // Salve os dados no banco de dados
+        // Implemente a lógica para armazenar férias
+        // ...
+
+        return redirect()->back()->with('success', 'Férias salvas com sucesso!');
+    }
+
+    public function storeHolidays(Request $request)
+    {
+        // Valide os dados
+        $request->validate([
+            'holidays' => 'required|array',
+            'holidays.*' => 'date',
+        ]);
+
+        // Salve os dados no banco de dados
+        // Implemente a lógica para armazenar feriados
+        // ...
+
+        return redirect()->back()->with('success', 'Feriados salvos com sucesso!');
     }
 }
