@@ -154,7 +154,7 @@
                         <li class="agendamentos-list">
                             <span>{{ $scheduling->name }}</span>
                             <span>{{ $scheduling->service }}</span>
-                            <span>{{ $scheduling->date }}</span>
+                            <span>{{ \Carbon\Carbon::createFromFormat('Y-m-d', $scheduling->date)->format('d-m-Y') }}</span>
 
                             <div class="dropdown">
                                 <button class="dropdown-toggle">Ações</button>
