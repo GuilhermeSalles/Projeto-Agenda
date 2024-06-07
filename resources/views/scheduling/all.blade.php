@@ -9,7 +9,7 @@
     <div class="container">
         <div class="section">
             <div class="content">
-                <h2>DASHBOARD</h2>
+                <h2>AGENDA</h2>
             </div>
         </div>
     </div>
@@ -66,7 +66,7 @@
 
                 .agendamentos-list {
                     border: none;
-                    margin: 10px 0px;
+                    margin: 10px 10px;
                     padding: 15px 10px;
                     border-radius: 10px;
                     display: flex;
@@ -123,12 +123,6 @@
             </style>
 
             <section class="dad-div section">
-                <!-- Centralize os títulos -->
-                <div style="text-align: center;">
-                    <span class="section__subtitle">Agendamentos</span>
-                    <br>
-                    <br>
-                </div>
 
                 <!-- Select para dias de trabalho -->
                 <div class="worked-days">
@@ -145,16 +139,16 @@
                 </div>
 
                 <!-- Saldo -->
-                <h2 style="text-align: center;">Saldo de {{ $date == null ? 'hoje' : $date->format('d/m/Y') }}: <b>R$
+                <h2 style="text-align: center;">Saldo de {{ $date == null ? 'hoje' : $date->format('d/m') }}: <b>R$
                         {{ number_format($soma, 2, ',', '.') }}</b></h2>
 
                 <!-- Lista de agendamentos -->
                 <ul class="container">
                     @foreach ($schedulings as $scheduling)
                         <li class="agendamentos-list">
-                            <span>{{ $scheduling->name }}</span>
-                            <span>{{ $scheduling->service }}</span>
-                            <span>{{ \Carbon\Carbon::createFromFormat('Y-m-d', $scheduling->date)->format('d-m-Y') }}</span>
+                            <span>{{ explode(' ', $scheduling->name)[0] }}</span>
+                            <span style="font-size: .7rem;">{{ \App\Models\Service::find($scheduling->service)->name }}</span>
+                            <span>{{ \Carbon\Carbon::createFromFormat('Y-m-d', $scheduling->date)->format('d-m') }}</span>
 
                             <div class="dropdown">
                                 <button class="dropdown-toggle">Ações</button>

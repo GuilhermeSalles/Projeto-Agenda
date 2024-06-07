@@ -17,8 +17,14 @@
             </div>
             <div class="form-group">
                 <label for="duration">Duração:</label>
-                <input type="text" id="duration" name="duration" class="form-control" value="{{ $service->duration }}">
+                <select id="duration" name="duration" class="form-control">
+                    <option value="30" {{ $service->duration == 30 ? 'selected' : '' }}>30 Minutos</option>
+                    <option value="60" {{ $service->duration == 60 ? 'selected' : '' }}>1 Hora</option>
+                    <option value="90" {{ $service->duration == 90 ? 'selected' : '' }}>1 Hora 30 Minutos</option>
+                    <!-- Adicione mais opções conforme necessário -->
+                </select>
             </div>
+            
             <div class="form-group">
                 <label for="value">Valor:</label>
                 <input type="text" id="value" name="value" class="form-control" value="{{ $service->value }}">

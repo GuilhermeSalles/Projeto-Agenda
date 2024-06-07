@@ -1,9 +1,10 @@
 @extends('admin.master')
 @extends('admin.get-status-form')
 
-@section('title', 'Horários')
+@section('title', 'Horarios')
 
 @section('content')
+
 
     <br>
     <div class="container">

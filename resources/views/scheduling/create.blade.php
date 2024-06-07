@@ -57,7 +57,7 @@
                     <img src="{{ asset('assets/img/favicon.png') }}" alt="popula image" class="popular__img">
 
                     <h3 class="popular__name">{{ $service->name }}</h3>
-                    <span class="popular__description">Corte apenas</span>
+                    <span class="popular__description">{{ $service->description}}</span>
 
                     <span class="popular__price">R$ {{ $service->value }}</span>
 

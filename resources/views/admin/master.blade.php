@@ -90,10 +90,10 @@
                     <span class="nav__name">Serviços</span>
                 </a>                
                 
-                <a href="{{ route('admin.times') }}" class="nav__link {{ Request::is('admin/times') ? 'active-link' : '' }}">
+                {{-- <a href="{{ route('admin.times') }}" class="nav__link {{ Request::is('admin/times') ? 'active-link' : '' }}">
                     <i class='bx bx-time'></i>
                     <span class="nav__name">Horários</span>
-                </a>
+                </a> --}}
                 
                 <a class="nav__link">
                     <i class='bx bx-moon' id="theme-button"></i>

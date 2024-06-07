@@ -40,7 +40,7 @@
 
         .voltar {
             padding: 1rem;
-            margin-left: 1.25rem;
+            margin-left: 1.5rem;
         }
 
         /* Estilo para todos os inputs */
@@ -91,7 +91,7 @@
             padding: 0 0.25em;
             background: var(--first-color);
             color: white;
-            border-radius: 30% 
+            border-radius: 30%
         }
     </style>
 
@@ -106,11 +106,11 @@
         <h3 class="professional"><i class="ri-user-2-fill"></i> Profissional: {{ $professional->name }}</h3>
         @include('layouts.get-status-form')
 
-        <div class="popular__container container grid">
+        <div class="popular__container container centerH">
             <article class="popular__card">
                 <img src="{{ asset('assets/img/favicon.png') }}" alt="popula image" class="popular__img">
                 <h2 class="popular__name">{{ $service->name }}</h2>
-                <span class="popular__description">Corte apenas</span>
+                <span class="popular__description">{{ $service->description}}</span>
                 <span class="popular__price">R$ {{ $service->value }}</span>
             </article>
         </div>
@@ -140,100 +140,99 @@
                         <hr class="style-eight">
 
                         <?php
-
-use Carbon\Carbon;
-            ?>
+                        
+                        use Carbon\Carbon;
+                        ?>
 
                         <div class="coolinput">
                             <label for="">Data</label>
-                            <input type="date" name="date" id="date" value="{{ Carbon::parse($date)->format('Y-m-d') }}">
+                            <input type="date" name="date" id="date"
+                                value="{{ Carbon::parse($date)->format('Y-m-d') }}">
                         </div>
 
                         <script>
-    document.getElementById('date').addEventListener('change', function() {
-        const date = this.value;
-        const id = '<?php echo $id; ?>'; // Substitua pelo ID apropriado
-        const service_id = '<?php echo $service_id; ?>'; // Substitua pelo ID do serviço apropriado
+                            document.getElementById('date').addEventListener('change', function() {
+                                const date = this.value;
+                                const id = '<?php echo $id; ?>'; // Substitua pelo ID apropriado
+                                const service_id = '<?php echo $service_id; ?>'; // Substitua pelo ID do serviço apropriado
 
-        const url = `/scheduling/create/${id}/service/${service_id}?date=${date}`;
-        
-        // Recarregar a página com a nova URL
-        window.location.href = url;
-    });
-</script>
+                                const url = `/scheduling/create/${id}/service/${service_id}?date=${date}`;
+
+                                // Recarregar a página com a nova URL
+                                window.location.href = url;
+                            });
+                        </script>
 
 
 
                         <div class="coolinput">
-    <label for="">Horário </label>
-    <?php
-        // Crie um array associativo para mapear os horários dos agendamentos
-        $schedulingTimes = [];
-        foreach ($schedulings as $scheduling) {
-            // Converta o formato "00:00:00" para "00:00"
-            $formattedTime = substr($scheduling->time, 0, 5);
-            $schedulingTimes[$formattedTime] = $formattedTime;
+                            <label for="">Horário </label>
+                            <?php
+                            // Crie um array associativo para mapear os horários dos agendamentos
+                            $schedulingTimes = [];
+                            foreach ($schedulings as $scheduling) {
+                                // Converta o formato "00:00:00" para "00:00"
+                                $formattedTime = substr($scheduling->time, 0, 5);
+                                $schedulingTimes[$formattedTime] = $formattedTime;
+                            
+                                // Obtenha a duração do serviço como um float
+                                $durationFloat = $scheduling->services->duration;
+                                $durationInt = (int) $durationFloat - 1;
+                            
+                                $timesPerHour = $durationInt / 60;
+                            
+                                $startedTime = $formattedTime;
+                                for ($i = 0; $i < ($timesPerHour < 1 ? 1 : ceil($timesPerHour) + 1); $i++) {
+                                    $newTime = date('H:i', strtotime($startedTime . ' +  30 minutes'));
+                                    $schedulingTimes[$newTime] = $newTime;
+                                    $startedTime = $newTime;
+                                }
+                            
+                                $endTime = date('H:i', strtotime($formattedTime . ' + ' . $durationInt . ' minutes'));
+                                $schedulingTimes[$endTime] = $endTime;
+                            }
+                            
+                            ?>
 
-            // Obtenha a duração do serviço como um float
-            $durationFloat = $scheduling->services->duration;
-            $durationInt = (int)($durationFloat) - 1 ;
-            
-            $timesPerHour = $durationInt/60 ;
-            
+                            <style>
+                                .scheduling {
+                                    color: red;
+                                    /* Define a cor dos horários com agendamento */
+                                }
+                            </style>
 
-            $startedTime = $formattedTime;
-            for($i = 0  ; $i < (($timesPerHour < 1) ? 1 : ceil($timesPerHour) + 1); $i++){
-                $newTime = date('H:i', strtotime($startedTime . ' +  30 minutes'));
-                $schedulingTimes[$newTime] = $newTime;
-                $startedTime = $newTime;
-            }
-
-            $endTime = date('H:i', strtotime($formattedTime . ' + ' . $durationInt . ' minutes'));
-            $schedulingTimes[$endTime] = $endTime;
-
-            
-        }
-
-    ?>
-
-    <style>
-        .scheduling {
-            color: red; /* Define a cor dos horários com agendamento */
-        }
-    </style>
-
-    <select name="time" id="time">
-
-    
-        <?php
-    
-// Obter a data e hora atual na região de São Paulo
-$now = Carbon::now('America/Sao_Paulo');
-$now = Carbon::parse('2024-06-05 11:23:21');
-
-// Arredondar a próxima hora com intervalos de 30 minutos no futuro
-$roundedHour = $now->addMinutes(30 - ($now->minute % 30))->startOfHour();
-
-        // Itere sobre as 24 horas do dia em intervalos de 30 minutos
-        for ($hour = $roundedHour->hour; $hour < 24; $hour++) {
-            for ($minute = 0; $minute < 60; $minute += 30) {
-                // Formate a hora e os minutos como "HH:MM"
-                $time = sprintf('%02d:%02d', $hour, $minute);
-
-                // Verifique se há um agendamento para o horário atual
-                if (isset($schedulingTimes[$time])) {
-                    echo "<option value='$time' disabled>$time - agendado</option>";
-                } else {
-                    echo "<option value='$time'>$time</option>";
-                }
-            }
-        }
-        ?>
-    </select>
-    </div>
+                            <select name="time" id="time">
 
 
-                        <div class="form-group text-center">
+                                <?php
+                                
+                                // Obter a data e hora atual na região de São Paulo
+                                $now = Carbon::now('America/Sao_Paulo');
+                                $now = Carbon::parse('2024-06-05 11:23:21');
+                                
+                                // Arredondar a próxima hora com intervalos de 30 minutos no futuro
+                                $roundedHour = $now->addMinutes(30 - ($now->minute % 30))->startOfHour();
+                                
+                                // Itere sobre as 24 horas do dia em intervalos de 30 minutos
+                                for ($hour = $roundedHour->hour; $hour < 24; $hour++) {
+                                    for ($minute = 0; $minute < 60; $minute += 30) {
+                                        // Formate a hora e os minutos como "HH:MM"
+                                        $time = sprintf('%02d:%02d', $hour, $minute);
+                                
+                                        // Verifique se há um agendamento para o horário atual
+                                        if (isset($schedulingTimes[$time])) {
+                                            echo "<option value='$time' disabled>$time - agendado</option>";
+                                        } else {
+                                            echo "<option value='$time'>$time</option>";
+                                        }
+                                    }
+                                }
+                                ?>
+                            </select>
+                        </div>
+
+
+                        <div class="form-group" style="text-align: center">
                             <button class="button" type="submit"> <i class="ri-calendar-check-line"></i>
                                 Agendar</i></button>
                         </div>

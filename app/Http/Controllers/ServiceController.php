@@ -48,7 +48,7 @@ class ServiceController extends Controller
 
         // Criar um novo serviço
         Service::create($request->all());
-
+        
         // Redirecionar para a página de listagem de serviços
         return redirect()->route('services.all');
     }

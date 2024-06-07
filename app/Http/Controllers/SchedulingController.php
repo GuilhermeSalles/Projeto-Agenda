@@ -91,18 +91,18 @@ class SchedulingController extends Controller
     {
         // Obtém a data da requisição ou usa a data atual se não estiver presente
         $date = $request->query('date', Carbon::now('America/Sao_Paulo')->format('Y-m-d'));
-    
+
         $professional = Professional::find($id);
         $service = Service::find($service_id);
-    
+
         $schedulings = Scheduling::where('pro', $id)
             ->whereDate('date', $date) // Certifique-se de que a coluna da data seja correta
             ->with('services')
             ->get();
-    
+
         return view('scheduling.create-final', compact('professional', 'service', 'schedulings', 'service_id', 'id', 'date'));
     }
-    
+
 
     public function store(Request $request)
     {
@@ -171,9 +171,7 @@ class SchedulingController extends Controller
 
     public function times(Request $request){
         return view('scheduling.times');
-
     }
-
 
     public function storeHours(Request $request)
     {

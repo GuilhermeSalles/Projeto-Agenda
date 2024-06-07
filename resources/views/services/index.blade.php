@@ -11,7 +11,7 @@
     <div class="container">
         <div class="section">
             <div class="content">
-                <h2>SERVICES</h2>
+                <h2>SERVIÇOS</h2>
             </div>
         </div>
     </div>
