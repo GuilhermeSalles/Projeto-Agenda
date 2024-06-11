@@ -50,13 +50,15 @@ Route::middleware(['web'])->group(function () {
         Route::get('/admin/dashboard/{date?}', [DashboardController::class, 'index'])->name('admin.dashboard');
         Route::get('/admin/services', [ServiceController::class, 'index'])->name('admin.services');
         Route::get('/admin/profissionais', [ProfessionalController::class, 'index'])->name('admin.profissionais');
+
         Route::get('/admin/times', [SchedulingController::class, 'times'])->name('admin.times');
 
-        Route::post('/scheduling/store/hours', [SchedulingController::class, 'storeHours'])->name('scheduling.store.hours');
-        Route::post('/scheduling/store/days', [SchedulingController::class, 'storeDays'])->name('scheduling.store.days');
-        Route::post('/scheduling/store/off_days', [SchedulingController::class, 'storeOffDays'])->name('scheduling.store.off_days');
-        Route::post('/scheduling/store/vacation', [SchedulingController::class, 'storeVacation'])->name('scheduling.store.vacation');
-        Route::post('/scheduling/store/holidays', [SchedulingController::class, 'storeHolidays'])->name('scheduling.store.holidays');
+
+        Route::post('/scheduling/store/hours', [schedulingController::class, 'storeHours'])->name('scheduling.store.hours');
+        Route::post('/scheduling/store/days', [schedulingController::class, 'storeDays'])->name('scheduling.store.days');
+        Route::post('/scheduling/store/off_days', [schedulingController::class, 'storeOffDays'])->name('scheduling.store.off_days');
+        Route::post('/scheduling/store/vacation', [schedulingController::class, 'storeVacation'])->name('scheduling.store.vacation');
+        Route::post('/scheduling/store/holidays', [schedulingController::class, 'storeHolidays'])->name('scheduling.store.holidays');
     });
 
     // Login routes

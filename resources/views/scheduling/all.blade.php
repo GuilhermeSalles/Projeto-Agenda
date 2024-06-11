@@ -148,8 +148,8 @@
                         <li class="agendamentos-list">
                             <span>{{ explode(' ', $scheduling->name)[0] }}</span>
                             <span style="font-size: .7rem;">{{ \App\Models\Service::find($scheduling->service)->name }}</span>
-                            <span>{{ \Carbon\Carbon::createFromFormat('Y-m-d', $scheduling->date)->format('d-m') }}</span>
-
+                            <span>{{ \Carbon\Carbon::createFromFormat('H:i:s', $scheduling->time)->format('H:i') }}</span>
+                            {{-- {{ \Carbon\Carbon::createFromFormat('Y-m-d', $scheduling->date)->format('d-m') }}   --}}
                             <div class="dropdown">
                                 <button class="dropdown-toggle">Ações</button>
                                 <div class="dropdown-menu">

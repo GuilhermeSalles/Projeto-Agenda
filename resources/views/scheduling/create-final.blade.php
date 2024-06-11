@@ -87,8 +87,8 @@
             display: inline-block;
             position: relative;
             top: -0.7em;
-            font-size: 2.5em;
-            padding: 0 0.25em;
+            font-size: 1.5em;
+            padding: 0 0.2em;
             background: var(--first-color);
             color: white;
             border-radius: 30%
@@ -110,7 +110,7 @@
             <article class="popular__card">
                 <img src="{{ asset('assets/img/favicon.png') }}" alt="popula image" class="popular__img">
                 <h2 class="popular__name">{{ $service->name }}</h2>
-                <span class="popular__description">{{ $service->description}}</span>
+                <span class="popular__description">{{ $service->description }}</span>
                 <span class="popular__price">R$ {{ $service->value }}</span>
             </article>
         </div>
@@ -126,18 +126,6 @@
                         <input type="hidden" name="pro" value="{{ $professional->id }}">
                         <input type="hidden" name="service" value="{{ $service->id }}">
 
-                        <div class="coolinput">
-                            <label for="">Nome</label>
-                            <input type="text" name="name" id="name" placeholder="Escreva seu nome aqui!">
-                        </div>
-                        <br>
-                        <div class="coolinput">
-                            <label for="">Telefone</label>
-                            <input type="text" name="phone" id="phone" placeholder="(xx)xxxxx-xxxx" value="">
-                        </div>
-
-                        <br>
-                        <hr class="style-eight">
 
                         <?php
                         
@@ -166,7 +154,7 @@
 
 
                         <div class="coolinput">
-                            <label for="">Horário </label>
+                            <label>Horário </label>
                             <?php
                             // Crie um array associativo para mapear os horários dos agendamentos
                             $schedulingTimes = [];
@@ -175,24 +163,22 @@
                                 $formattedTime = substr($scheduling->time, 0, 5);
                                 $schedulingTimes[$formattedTime] = $formattedTime;
                             
-                                // Obtenha a duração do serviço como um float
-                                $durationFloat = $scheduling->services->duration;
-                                $durationInt = (int) $durationFloat - 1;
+                                // Obtenha a duração do serviço em minutos
+                                $durationMinutes = (int) $scheduling->services->duration;
                             
-                                $timesPerHour = $durationInt / 60;
+                                // Calcule quantos intervalos de 30 minutos são necessários
+                                $intervals = ceil($durationMinutes / 30);
                             
+                                // Adicione os horários ocupados ao array
                                 $startedTime = $formattedTime;
-                                for ($i = 0; $i < ($timesPerHour < 1 ? 1 : ceil($timesPerHour) + 1); $i++) {
-                                    $newTime = date('H:i', strtotime($startedTime . ' +  30 minutes'));
+                                for ($i = 1; $i < $intervals; $i++) {
+                                    $newTime = date('H:i', strtotime($startedTime . ' + 30 minutes'));
                                     $schedulingTimes[$newTime] = $newTime;
                                     $startedTime = $newTime;
                                 }
-                            
-                                $endTime = date('H:i', strtotime($formattedTime . ' + ' . $durationInt . ' minutes'));
-                                $schedulingTimes[$endTime] = $endTime;
                             }
-                            
                             ?>
+
 
                             <style>
                                 .scheduling {
@@ -231,6 +217,18 @@
                             </select>
                         </div>
 
+                        <br>
+                        <hr class="style-eight">
+
+
+                        <div class="coolinput">
+                            <label for="">Nome</label>
+                            <input type="text" name="name" id="name" placeholder="Escreva seu nome aqui!">
+                        </div>
+                        <div class="coolinput">
+                            <label for="">Telefone</label>
+                            <input type="text" name="phone" id="phone" placeholder="(xx)xxxxx-xxxx" value="">
+                        </div>
 
                         <div class="form-group" style="text-align: center">
                             <button class="button" type="submit"> <i class="ri-calendar-check-line"></i>
