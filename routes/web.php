@@ -59,6 +59,9 @@ Route::middleware(['web'])->group(function () {
         Route::post('/scheduling/store/off_days', [schedulingController::class, 'storeOffDays'])->name('scheduling.store.off_days');
         Route::post('/scheduling/store/vacation', [schedulingController::class, 'storeVacation'])->name('scheduling.store.vacation');
         Route::post('/scheduling/store/holidays', [schedulingController::class, 'storeHolidays'])->name('scheduling.store.holidays');
+
+        Route::post('/scheduling/store-special-hours', [schedulingController::class, 'storeSpecialHours'])->name('scheduling.store.special_hours');
+
     });
 
     // Login routes
