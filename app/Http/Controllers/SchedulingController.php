@@ -6,9 +6,17 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
+
 use App\Models\Service;
 use App\Models\Professional;
 use App\Models\Scheduling;
+
+use App\Models\WeeklySchedule;
+
+use App\Models\ProhibitedDay;
+
+
 
 class SchedulingController extends Controller
 {
@@ -169,9 +177,28 @@ class SchedulingController extends Controller
         return redirect()->back();
     }
 
-    public function times(Request $request){
-        return view('scheduling.times');
+    public function times(Request $request)
+    {
+        $weeklySchedules = WeeklySchedule::all();
+    
+        // Buscar os horários padrão para os dias não especiais
+        $defaultSchedule = WeeklySchedule::where('special_day', false)->first();
+    
+        // Verificar se há um horário padrão
+        if ($defaultSchedule) {
+            $opening_time = \DateTime::createFromFormat('H:i:s', $defaultSchedule->opening_time)->format('H:i');
+            $closing_time = \DateTime::createFromFormat('H:i:s', $defaultSchedule->closing_time)->format('H:i');
+            
+        } else {
+            // Definir horários padrão se nenhum estiver definido
+            $opening_time = '08:00';
+            $closing_time = '18:00';
+        }
+    
+        return view('scheduling.times', compact('weeklySchedules', 'opening_time', 'closing_time'));
     }
+    
+    
 
     public function storeHours(Request $request)
     {
@@ -180,70 +207,159 @@ class SchedulingController extends Controller
             'opening_time' => 'required|date_format:H:i',
             'closing_time' => 'required|date_format:H:i',
         ]);
-
-        // Salve os dados no banco de dados
-        // Implemente a lógica para armazenar horas de funcionamento
-        // ...
-
-        return redirect()->back()->with('success', 'Horas de funcionamento salvas com sucesso!');
+    
+        // Apaga os horários anteriores para os dias não especiais
+        DB::table('weekly_schedule')->where('special_day', false)->delete();
+    
+        // Salve os dados no banco de dados para cada dia da semana que não é especial
+        $daysOfWeek = [
+            'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'
+        ];
+    
+        foreach ($daysOfWeek as $day) {
+            DB::table('weekly_schedule')->insert([
+                'day_of_week' => $day,
+                'opening_time' => $request->opening_time,
+                'closing_time' => $request->closing_time,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
+    
+        return redirect()->back()->with('success', 'Horas de funcionamento salvas com sucesso para todos os dias da semana, exceto os dias especiais!');
     }
 
+    public function storeSpecialHours(Request $request)
+    {
+        // Valide os dados
+        $request->validate([
+            'day_of_week' => 'required|string|in:monday,tuesday,wednesday,thursday,friday,saturday,sunday',
+            'special_opening_time' => 'required|date_format:H:i',
+            'special_closing_time' => 'required|date_format:H:i',
+        ]);
+    
+        // Recupere os dados do formulário
+        $dayOfWeek = $request->day_of_week;
+        $specialOpeningTime = $request->special_opening_time;
+        $specialClosingTime = $request->special_closing_time;
+    
+        // Verifique se já existe um registro para o dia da semana especificado
+        $weeklySchedule = WeeklySchedule::where('day_of_week', $dayOfWeek)->first();
+    
+        // Se já existir, atualize os horários especiais
+        if ($weeklySchedule) {
+            $weeklySchedule->opening_time = $specialOpeningTime;
+            $weeklySchedule->closing_time = $specialClosingTime;
+            $weeklySchedule->special_day = true; // Marque como um special_day
+            $weeklySchedule->save();
+        } else {
+            // Se não existir, crie um novo registro com os horários especiais
+            WeeklySchedule::create([
+                'day_of_week' => $dayOfWeek,
+                'opening_time' => $specialOpeningTime,
+                'closing_time' => $specialClosingTime,
+                'special_day' => true, // Marque como um special_day
+            ]);
+        }
+    
+        return redirect()->back()->with('success', 'Horário especial salvo com sucesso!');
+    }
+    
     public function storeDays(Request $request)
     {
         // Valide os dados
         $request->validate([
-            'day_of_week' => 'required|string',
+            'days' => 'required|array',  // Deve ser um array
+            'days.*' => 'string|in:monday,tuesday,wednesday,thursday,friday,saturday,sunday',  // Cada item do array deve ser um dia da semana válido
         ]);
-
-        // Salve os dados no banco de dados
-        // Implemente a lógica para armazenar dias da semana
-        // ...
-
+    
+        // Obter todos os dias da semana do formulário
+        $selectedDays = $request->input('days');
+    
+        // Obter todos os dias da semana da tabela
+        $daysOfWeek = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+    
+        // Marcar todos os dias como não trabalhados inicialmente
+        DB::table('weekly_schedule')->whereIn('day_of_week', $daysOfWeek)->update(['working' => false]);
+    
+        // Atualizar ou inserir os dias selecionados
+        foreach ($selectedDays as $day) {
+            DB::table('weekly_schedule')
+                ->updateOrInsert(
+                    ['day_of_week' => $day],
+                    ['working' => true]
+                );
+        }
+    
+        // Remover os dias não selecionados
+        $notSelectedDays = array_diff($daysOfWeek, $selectedDays);
+        DB::table('weekly_schedule')->whereIn('day_of_week', $notSelectedDays)->delete();
+    
         return redirect()->back()->with('success', 'Dias da semana salvos com sucesso!');
     }
+    
+    
+    
 
-    public function storeOffDays(Request $request)
-    {
-        // Valide os dados
-        $request->validate([
-            'off_days' => 'required|array',
-            'off_days.*' => 'date',
+
+public function storeOffDays(Request $request)
+{
+    // Valide os dados
+    $request->validate([
+        'off_days' => 'required|array',
+        'off_days.*' => 'date',
+    ]);
+
+    // Salve os dados no banco de dados
+    foreach ($request->off_days as $date) {
+        ProhibitedDay::create([
+            'date' => $date,
+            'type' => 'off_day',
         ]);
-
-        // Salve os dados no banco de dados
-        // Implemente a lógica para armazenar folgas
-        // ...
-
-        return redirect()->back()->with('success', 'Folgas salvas com sucesso!');
     }
 
-    public function storeVacation(Request $request)
-    {
-        // Valide os dados
-        $request->validate([
-            'vacation_start' => 'required|date',
-            'vacation_end' => 'required|date',
+    return redirect()->back()->with('success', 'Folgas salvas com sucesso!');
+}
+
+public function storeVacation(Request $request)
+{
+    // Valide os dados
+    $request->validate([
+        'vacation_start' => 'required|date',
+        'vacation_end' => 'required|date',
+    ]);
+
+    // Salve os dados no banco de dados
+    ProhibitedDay::create([
+        'date' => $request->vacation_start,
+        'type' => 'vacation_start',
+    ]);
+
+    ProhibitedDay::create([
+        'date' => $request->vacation_end,
+        'type' => 'vacation_end',
+    ]);
+
+    return redirect()->back()->with('success', 'Férias salvas com sucesso!');
+}
+
+public function storeHolidays(Request $request)
+{
+    // Valide os dados
+    $request->validate([
+        'holidays' => 'required|array',
+        'holidays.*' => 'date',
+    ]);
+
+    // Salve os dados no banco de dados
+    foreach ($request->holidays as $date) {
+        ProhibitedDay::create([
+            'date' => $date,
+            'type' => 'holiday',
         ]);
-
-        // Salve os dados no banco de dados
-        // Implemente a lógica para armazenar férias
-        // ...
-
-        return redirect()->back()->with('success', 'Férias salvas com sucesso!');
     }
 
-    public function storeHolidays(Request $request)
-    {
-        // Valide os dados
-        $request->validate([
-            'holidays' => 'required|array',
-            'holidays.*' => 'date',
-        ]);
+    return redirect()->back()->with('success', 'Feriados salvos com sucesso!');
+}
 
-        // Salve os dados no banco de dados
-        // Implemente a lógica para armazenar feriados
-        // ...
-
-        return redirect()->back()->with('success', 'Feriados salvos com sucesso!');
-    }
 }
