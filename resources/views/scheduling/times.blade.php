@@ -73,39 +73,27 @@
             <hr>
 
             {{-- Formulário para Dias da Semana --}}
-<h3>Dias da Semana</h3>
+            <h3>Dias da Semana</h3>
 <form action="{{ route('scheduling.store.days') }}" method="POST">
     @csrf
     <div class="form-group">
         <label>Dias da Semana</label><br>
-        <div class="form-check form-check-inline">
-            <input class="form-check-input" type="checkbox" name="days[]" id="monday" value="monday" {{ $weeklySchedules->contains('day_of_week', 'monday') ? 'checked' : '' }}>
-            <label class="form-check-label" for="monday">Segunda-feira</label>
-        </div>
-        <div class="form-check form-check-inline">
-            <input class="form-check-input" type="checkbox" name="days[]" id="tuesday" value="tuesday" {{ $weeklySchedules->contains('day_of_week', 'tuesday') ? 'checked' : '' }}>
-            <label class="form-check-label" for="tuesday">Terça-feira</label>
-        </div>
-        <div class="form-check form-check-inline">
-            <input class="form-check-input" type="checkbox" name="days[]" id="wednesday" value="wednesday" {{ $weeklySchedules->contains('day_of_week', 'wednesday') ? 'checked' : '' }}>
-            <label class="form-check-label" for="wednesday">Quarta-feira</label>
-        </div>
-        <div class="form-check form-check-inline">
-            <input class="form-check-input" type="checkbox" name="days[]" id="thursday" value="thursday" {{ $weeklySchedules->contains('day_of_week', 'thursday') ? 'checked' : '' }}>
-            <label class="form-check-label" for="thursday">Quinta-feira</label>
-        </div>
-        <div class="form-check form-check-inline">
-            <input class="form-check-input" type="checkbox" name="days[]" id="friday" value="friday" {{ $weeklySchedules->contains('day_of_week', 'friday') ? 'checked' : '' }}>
-            <label class="form-check-label" for="friday">Sexta-feira</label>
-        </div>
-        <div class="form-check form-check-inline">
-            <input class="form-check-input" type="checkbox" name="days[]" id="saturday" value="saturday" {{ $weeklySchedules->contains('day_of_week', 'saturday') ? 'checked' : '' }}>
-            <label class="form-check-label" for="saturday">Sábado</label>
-        </div>
-        <div class="form-check form-check-inline">
-            <input class="form-check-input" type="checkbox" name="days[]" id="sunday" value="sunday" {{ $weeklySchedules->contains('day_of_week', 'sunday') ? 'checked' : '' }}>
-            <label class="form-check-label" for="sunday">Domingo</label>
-        </div>
+
+        @foreach (['monday' => 'Segunda-feira', 'tuesday' => 'Terça-feira', 'wednesday' => 'Quarta-feira', 'thursday' => 'Quinta-feira', 'friday' => 'Sexta-feira', 'saturday' => 'Sábado', 'sunday' => 'Domingo'] as $day => $dayLabel)
+            @php
+                $schedule = $weeklySchedules->firstWhere('day_of_week', $day);
+            @endphp
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" name="days[]" id="{{ $day }}" value="{{ $day }}" {{ $schedule ? 'checked' : '' }}>
+                <label class="form-check-label" for="{{ $day }}">
+                    {{ $dayLabel }}
+                    @if ($schedule && $schedule->opening_time && $schedule->closing_time)
+    - {{ \Carbon\Carbon::createFromFormat('H:i:s', $schedule->opening_time)->format('H:i') }} às {{ \Carbon\Carbon::createFromFormat('H:i:s', $schedule->closing_time)->format('H:i') }}
+@endif
+
+                </label>
+            </div>
+        @endforeach
     </div>
 
     <button type="submit" class="btn btn-primary">Salvar</button>
@@ -114,52 +102,113 @@
 
 
 
-            <hr>
 
-            {{-- Formulário para Folgas --}}
-            <h3>Folgas</h3>
-            <form action="{{ route('scheduling.store.off_days') }}" method="POST">
+    
+
+        <hr>
+
+        {{-- Formulário para Folgas --}}
+        <h3>Folgas</h3>
+        <form action="{{ route('scheduling.store.off_days') }}" method="POST">
+            @csrf
+            <div class="form-group">
+                <label for="off_days">Folgas</label>
+                <input type="date" name="off_days[]" id="off_days" class="form-control" multiple required>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Salvar</button>
+        </form>
+
+        @if(isset($prohibitedDays['off_day']))
+            <h4>Folgas Registradas:</h4>
+            <ul>
+                @foreach($prohibitedDays['off_day'] as $day)
+                    <li>{{ $day->date }}</li>
+                @endforeach
+            </ul>
+
+            <form action="{{ route('scheduling.delete.day') }}" method="POST">
                 @csrf
                 <div class="form-group">
-                    <label for="off_days">Folgas</label>
-                    <input type="date" name="off_days[]" id="off_days" class="form-control" multiple required>
+                    <label for="off_day_delete">Deletar Folga</label>
+                    <select name="date" id="off_day_delete" class="form-control" required>
+                        @foreach($prohibitedDays['off_day'] as $day)
+                            <option value="{{ $day->date }}">{{ $day->date }}</option>
+                        @endforeach
+                    </select>
+                    <input type="hidden" name="type" value="off_day">
                 </div>
-
-                <button type="submit" class="btn btn-primary">Salvar</button>
+                <button type="submit" class="btn btn-danger">Delete</button>
             </form>
+        @endif
 
-            <hr>
+        <hr>
 
-            {{-- Formulário para Férias --}}
-            <h3>Férias</h3>
-            <form action="{{ route('scheduling.store.vacation') }}" method="POST">
+        {{-- Formulário para Férias --}}
+        <h3>Férias</h3>
+        <form action="{{ route('scheduling.store.vacation') }}" method="POST">
+            @csrf
+            <div class="form-group">
+                <label for="vacation_start">Início das Férias</label>
+                <input type="date" name="vacation_start" id="vacation_start" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+                <label for="vacation_end">Fim das Férias</label>
+                <input type="date" name="vacation_end" id="vacation_end" class="form-control" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Salvar</button>
+        </form>
+
+        @if(isset($prohibitedDays['vacation_start']) || isset($prohibitedDays['vacation_end']))
+            <h4>Férias Registradas:</h4>
+            <ul>
+                @foreach($prohibitedDays['vacation_start'] as $day)
+                    <li>Início: {{ $day->date }}</li>
+                @endforeach
+                @foreach($prohibitedDays['vacation_end'] as $day)
+                    <li>Fim: {{ $day->date }}</li>
+                @endforeach
+            </ul>
+        @endif
+
+        <hr>
+
+        {{-- Formulário para Feriados --}}
+        <h3>Feriados</h3>
+        <form action="{{ route('scheduling.store.holidays') }}" method="POST">
+            @csrf
+            <div class="form-group">
+                <label for="holidays">Feriados</label>
+                <input type="date" name="holidays[]" id="holidays" class="form-control" multiple required>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Salvar</button>
+        </form>
+
+        @if(isset($prohibitedDays['holiday']))
+            <h4>Feriados Registrados:</h4>
+            <ul>
+                @foreach($prohibitedDays['holiday'] as $day)
+                    <li>{{ $day->date }}</li>
+                @endforeach
+            </ul>
+
+            <form action="{{ route('scheduling.delete.day') }}" method="POST">
                 @csrf
                 <div class="form-group">
-                    <label for="vacation_start">Início das Férias</label>
-                    <input type="date" name="vacation_start" id="vacation_start" class="form-control" required>
+                    <label for="holiday_delete">Deletar Feriado</label>
+                    <select name="date" id="holiday_delete" class="form-control" required>
+                        @foreach($prohibitedDays['holiday'] as $day)
+                            <option value="{{ $day->date }}">{{ $day->date }}</option>
+                        @endforeach
+                    </select>
+                    <input type="hidden" name="type" value="holiday">
                 </div>
-
-                <div class="form-group">
-                    <label for="vacation_end">Fim das Férias</label>
-                    <input type="date" name="vacation_end" id="vacation_end" class="form-control" required>
-                </div>
-
-                <button type="submit" class="btn btn-primary">Salvar</button>
+                <button type="submit" class="btn btn-danger">Delete</button>
             </form>
-
-            <hr>
-
-            {{-- Formulário para Feriados --}}
-            <h3>Feriados</h3>
-            <form action="{{ route('scheduling.store.holidays') }}" method="POST">
-                @csrf
-                <div class="form-group">
-                    <label for="holidays">Feriados</label>
-                    <input type="date" name="holidays[]" id="holidays" class="form-control" multiple required>
-                </div>
-
-                <button type="submit" class="btn btn-primary">Salvar</button>
-            </form>
+        @endif
 
         </div>
     </div>

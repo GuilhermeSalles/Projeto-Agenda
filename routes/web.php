@@ -62,6 +62,10 @@ Route::middleware(['web'])->group(function () {
 
         Route::post('/scheduling/store-special-hours', [schedulingController::class, 'storeSpecialHours'])->name('scheduling.store.special_hours');
 
+        // web.php
+Route::post('/scheduling/delete-day', [SchedulingController::class, 'deleteDay'])->name('scheduling.delete.day');
+
+
     });
 
     // Login routes
