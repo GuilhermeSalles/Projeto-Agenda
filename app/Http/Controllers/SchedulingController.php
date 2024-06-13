@@ -188,15 +188,19 @@ class SchedulingController extends Controller
         if ($defaultSchedule) {
             $opening_time = \DateTime::createFromFormat('H:i:s', $defaultSchedule->opening_time)->format('H:i');
             $closing_time = \DateTime::createFromFormat('H:i:s', $defaultSchedule->closing_time)->format('H:i');
-            
         } else {
             // Definir horários padrão se nenhum estiver definido
             $opening_time = '08:00';
             $closing_time = '18:00';
         }
     
-        return view('scheduling.times', compact('weeklySchedules', 'opening_time', 'closing_time'));
+        // Buscar os dias proibidos
+        $prohibitedDays = ProhibitedDay::all()->groupBy('type');
+    
+        return view('scheduling.times', compact('weeklySchedules', 'opening_time', 'closing_time', 'prohibitedDays'));
     }
+    
+    
     
     
 
@@ -219,7 +223,7 @@ class SchedulingController extends Controller
         foreach ($daysOfWeek as $day) {
             DB::table('weekly_schedule')->insert([
                 'day_of_week' => $day,
-                'opening_time' => $request->opening_time,
+                'opening_time' => $request->opening_time,   
                 'closing_time' => $request->closing_time,
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -329,7 +333,11 @@ public function storeVacation(Request $request)
         'vacation_end' => 'required|date',
     ]);
 
-    // Salve os dados no banco de dados
+    // Apaga quaisquer registros de início e fim de férias existentes
+    ProhibitedDay::where('type', 'vacation_start')->delete();
+    ProhibitedDay::where('type', 'vacation_end')->delete();
+
+    // Salva os novos dados no banco de dados
     ProhibitedDay::create([
         'date' => $request->vacation_start,
         'type' => 'vacation_start',
@@ -342,6 +350,7 @@ public function storeVacation(Request $request)
 
     return redirect()->back()->with('success', 'Férias salvas com sucesso!');
 }
+
 
 public function storeHolidays(Request $request)
 {
@@ -361,5 +370,18 @@ public function storeHolidays(Request $request)
 
     return redirect()->back()->with('success', 'Feriados salvos com sucesso!');
 }
+
+public function deleteDay(Request $request)
+{
+    $request->validate([
+        'date' => 'required|date',
+        'type' => 'required|string|in:off_day,vacation_start,vacation_end,holiday',
+    ]);
+
+    ProhibitedDay::where('date', $request->date)->where('type', $request->type)->delete();
+
+    return redirect()->back()->with('success', 'Dia proibido deletado com sucesso!');
+}
+
 
 }
