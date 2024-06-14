@@ -135,7 +135,7 @@
                         @endforeach
                     </select>
 
-                    <a class="button" href="{{ route('scheduling.all', ['date' => now()->format('Y-m-d')]) }}">Hoje</a>
+                    <a class="button" href="{{ route('scheduling.all', ['date' => now('America/Sao_Paulo')->format('Y-m-d')]) }}">Hoje</a>
                 </div>
 
                 <!-- Saldo -->

@@ -134,7 +134,7 @@
 
                         <div class="coolinput">
                             <label for="">Data</label>
-                            <input type="date" name="date" id="date"
+                            <input type="date" name="date" id="date" min="{{ Carbon::parse($date)->format('Y-m-d') }}"
                                 value="{{ Carbon::parse($date)->format('Y-m-d') }}">
                         </div>
 

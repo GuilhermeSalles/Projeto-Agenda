@@ -13,6 +13,7 @@ class DashboardController extends Controller
     public function index($date = null)
     {
         if ($date == null) {
+            // Definindo a data atual no fuso horário de São Paulo
             $date = Carbon::now('America/Sao_Paulo');
         } else {
             $date = Carbon::parse($date);
@@ -54,6 +55,6 @@ class DashboardController extends Controller
 
         $date = ($date->format('Y-m-d') == Carbon::now('America/Sao_Paulo')->format('Y-m-d')) ? null : $date;
 
-        return view('admin.dashboard', compact('schedulings', 'soma', 'uniqueDates', 'date'));
+        return view('scheduling.all', compact('schedulings', 'soma', 'uniqueDates', 'date'));
     }
 }
