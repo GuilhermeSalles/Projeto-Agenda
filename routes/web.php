@@ -54,18 +54,13 @@ Route::middleware(['web'])->group(function () {
         Route::get('/admin/times', [SchedulingController::class, 'times'])->name('admin.times');
 
 
-        Route::post('/scheduling/store/hours', [schedulingController::class, 'storeHours'])->name('scheduling.store.hours');
-        Route::post('/scheduling/store/days', [schedulingController::class, 'storeDays'])->name('scheduling.store.days');
-        Route::post('/scheduling/store/off_days', [schedulingController::class, 'storeOffDays'])->name('scheduling.store.off_days');
-        Route::post('/scheduling/store/vacation', [schedulingController::class, 'storeVacation'])->name('scheduling.store.vacation');
-        Route::post('/scheduling/store/holidays', [schedulingController::class, 'storeHolidays'])->name('scheduling.store.holidays');
-
-        Route::post('/scheduling/store-special-hours', [schedulingController::class, 'storeSpecialHours'])->name('scheduling.store.special_hours');
-
-        // web.php
-Route::post('/scheduling/delete-day', [SchedulingController::class, 'deleteDay'])->name('scheduling.delete.day');
-
-
+        Route::post('/scheduling/store/hours', [SchedulingController::class, 'storeHours'])->name('scheduling.store.hours');
+        Route::post('/scheduling/store/days', [SchedulingController::class, 'storeDays'])->name('scheduling.store.days');
+        Route::post('/scheduling/store/off_days', [SchedulingController::class, 'storeOffDays'])->name('scheduling.store.off_days');
+        Route::post('/scheduling/store/vacation', [SchedulingController::class, 'storeVacation'])->name('scheduling.store.vacation');
+        Route::post('/scheduling/store/holidays', [SchedulingController::class, 'storeHolidays'])->name('scheduling.store.holidays');
+        Route::post('/scheduling/store-special-hours', [SchedulingController::class, 'storeSpecialHours'])->name('scheduling.store.special_hours');
+        Route::post('/scheduling/delete-day', [SchedulingController::class, 'deleteDay'])->name('scheduling.delete.day');
     });
 
     // Login routes

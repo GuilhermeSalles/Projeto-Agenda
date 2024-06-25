@@ -1,7 +1,6 @@
 @extends('layouts.master')
 @extends('layouts.get-status-form')
 
-
 @section('title', 'Página Inicial')
 
 @section('content')
@@ -98,7 +97,7 @@
     <!--==================== WHO ====================-->
     <section class="who section" id="who">
         <span class="section__subtitle">Agendar</span>
-        <h2 class="section__title"> Agora preencha os dados para marcar seu horario!!</h2>
+        <h2 class="section__title">Agora preencha os dados para marcar seu horário!!</h2>
 
         <a href="{{ URL::previous() }}" class="button voltar">
             <i class="ri-arrow-left-line"></i>
@@ -126,9 +125,7 @@
                         <input type="hidden" name="pro" value="{{ $professional->id }}">
                         <input type="hidden" name="service" value="{{ $service->id }}">
 
-
                         <?php
-                        
                         use Carbon\Carbon;
                         ?>
 
@@ -151,8 +148,6 @@
                             });
                         </script>
 
-
-
                         <div class="coolinput">
                             <label>Horário </label>
                             <?php
@@ -162,13 +157,13 @@
                                 // Converta o formato "00:00:00" para "00:00"
                                 $formattedTime = substr($scheduling->time, 0, 5);
                                 $schedulingTimes[$formattedTime] = $formattedTime;
-                            
+
                                 // Obtenha a duração do serviço em minutos
                                 $durationMinutes = (int) $scheduling->services->duration;
-                            
+
                                 // Calcule quantos intervalos de 30 minutos são necessários
                                 $intervals = ceil($durationMinutes / 30);
-                            
+
                                 // Adicione os horários ocupados ao array
                                 $startedTime = $formattedTime;
                                 for ($i = 1; $i < $intervals; $i++) {
@@ -179,7 +174,6 @@
                             }
                             ?>
 
-
                             <style>
                                 .scheduling {
                                     color: red;
@@ -188,30 +182,25 @@
                             </style>
 
                             <select name="time" id="time">
-
-
                                 <?php
-                                
-                                // Obter a data e hora atual na região de São Paulo
-                                $now = Carbon::now('America/Sao_Paulo');
-                                $now = Carbon::parse('2024-06-05 11:23:21');
-                                
-                                // Arredondar a próxima hora com intervalos de 30 minutos no futuro
-                                $roundedHour = $now->addMinutes(30 - ($now->minute % 30))->startOfHour();
-                                
-                                // Itere sobre as 24 horas do dia em intervalos de 30 minutos
-                                for ($hour = $roundedHour->hour; $hour < 24; $hour++) {
-                                    for ($minute = 0; $minute < 60; $minute += 30) {
-                                        // Formate a hora e os minutos como "HH:MM"
-                                        $time = sprintf('%02d:%02d', $hour, $minute);
-                                
-                                        // Verifique se há um agendamento para o horário atual
-                                        if (isset($schedulingTimes[$time])) {
-                                            echo "<option value='$time' disabled>$time - agendado</option>";
-                                        } else {
-                                            echo "<option value='$time'>$time</option>";
-                                        }
+                                // Convertendo $opening_time e $closing_time para objetos Carbon
+                                $openingTime = Carbon::createFromFormat('H:i', $opening_time);
+                                $closingTime = Carbon::createFromFormat('H:i', $closing_time);
+
+                                // Iterando de $openingTime a $closingTime em intervalos de 30 minutos
+                                $currentTime = $openingTime;
+                                while ($currentTime < $closingTime) {
+                                    $time = $currentTime->format('H:i');
+                                    
+                                    // Verifique se há um agendamento para o horário atual
+                                    if (isset($schedulingTimes[$time])) {
+                                        echo "<option value='$time' disabled>$time - agendado</option>";
+                                    } else {
+                                        echo "<option value='$time'>$time</option>";
                                     }
+
+                                    // Incrementar 30 minutos
+                                    $currentTime->addMinutes(30);
                                 }
                                 ?>
                             </select>
@@ -219,7 +208,6 @@
 
                         <br>
                         <hr class="style-eight">
-
 
                         <div class="coolinput">
                             <label for="">Nome</label>
