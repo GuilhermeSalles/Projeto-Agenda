@@ -18,7 +18,7 @@
         <div class="section"
             style="padding: 20px; border-radius: 10px; background-color: #f8f9fa; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
             {{-- Formulário para Horas de Funcionamento --}}
-            <h3 class="section__subtitle" style="text-align: center; color: #333; ">Horas de Funcionamento</h3>
+            <h3 class="section__subtitle" style="text-align: center; color: #333; ">Horário de Funcionamento</h3>
             <br>
             <form action="{{ route('scheduling.store.hours') }}" method="POST">
                 @csrf
@@ -215,6 +215,51 @@
                             <select name="date" id="holiday_delete" class="form-control" required>
                                 @foreach ($prohibitedDays['holiday'] as $day)
                                     <option value="{{ $day->date }}">{{ $day->date }}</option>
+                                @endforeach
+                            </select>
+                            <input type="hidden" name="type" value="holiday">
+                        </div>
+                        <button type="submit" class="btn btn-danger">Deletar</button>
+                    </form>
+                @endif
+
+
+                {{-- Formulário para Saídas Especiais --}}
+                <h3 class="section__subtitle" style="text-align: center; color: #333; ">Saídas Especiais</h3>
+                <form action="{{ route('scheduling.store.special-exit') }}" method="POST">
+                    @csrf
+                    <div class="form-group">
+                        <label for="holidays">Dia</label>
+                        <input type="date" name="day" id="day" class="form-control" multiple required>
+
+                        <label for="holidays">Horário</label>
+                        <input type="time" name="time" id="time" class="form-control" multiple required>
+
+
+                        <label for="holidays">Duração</label>
+                        <input type="text" name="duration" id="duration" class="form-control" multiple required>
+                    </div>
+
+                    <br>
+
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                </form>
+
+                @if (isset($specialExits))
+                    <h4>Saídas Registradas:</h4>
+                    <ul>
+                        @foreach ($specialExits as $day)
+                            <li>{{ $day->date }}</li>
+                        @endforeach
+                    </ul>
+
+                    <form action="{{ route('scheduling.delete.special-exit') }}" method="POST">
+                        @csrf
+                        <div class="form-group">
+                            <label for="holiday_delete">Deletar Saída</label>
+                            <select name="date" id="date" class="form-control" required>
+                                @foreach ($specialExits as $day)
+                                    <option value="{{ $day->id }}">{{ $day->date }}</option>
                                 @endforeach
                             </select>
                             <input type="hidden" name="type" value="holiday">

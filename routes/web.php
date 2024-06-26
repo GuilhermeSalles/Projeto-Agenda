@@ -61,6 +61,9 @@ Route::middleware(['web'])->group(function () {
         Route::post('/scheduling/store/holidays', [SchedulingController::class, 'storeHolidays'])->name('scheduling.store.holidays');
         Route::post('/scheduling/store-special-hours', [SchedulingController::class, 'storeSpecialHours'])->name('scheduling.store.special_hours');
         Route::post('/scheduling/delete-day', [SchedulingController::class, 'deleteDay'])->name('scheduling.delete.day');
+        Route::post('/scheduling/store/specialexit', [SchedulingController::class, 'storeSpecialExit'])->name('scheduling.store.special-exit');
+        Route::post('/scheduling/delete-specialexit', [SchedulingController::class, 'deleteSpecialExit'])->name('scheduling.delete.special-exit');
+
 
         Route::get('/scheduling/admin/create/{id}', [SchedulingController::class, 'adminCreate'])->name('scheduling.admin.create');
         Route::get('/scheduling/admin/create/{id}/service/{service_id}', [SchedulingController::class, 'adminCreateSelectService'])->name('scheduling.admin.create-select-service');

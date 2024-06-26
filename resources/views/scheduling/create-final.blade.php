@@ -150,7 +150,9 @@
 
                         <div class="coolinput">
                             <label>Horário </label>
+
                             <?php
+                            
                             // Crie um array associativo para mapear os horários dos agendamentos
                             $schedulingTimes = [];
                             foreach ($schedulings as $scheduling) {

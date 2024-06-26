@@ -15,6 +15,7 @@ use App\Models\Scheduling;
 use App\Models\WeeklySchedule;
 
 use App\Models\ProhibitedDay;
+use App\Models\SpecialExit;
 
 
 
@@ -102,10 +103,26 @@ class SchedulingController extends Controller
         $service = Service::find($service_id);
 
         $date = $request->query('date', Carbon::now('America/Sao_Paulo')->format('Y-m-d'));
+
         $schedulings = Scheduling::where('pro', $id)
             ->whereDate('date', $date) // Certifique-se de que a coluna da data seja correta
             ->with('services')
             ->get();
+
+        //$specialExits = SpecialExit::whereDate('date', $date);
+        $specialExits = SpecialExit::whereDate('date', $date)->get();
+
+
+        foreach($specialExits as $special){
+            $special->services = new \stdClass(); // ou use uma classe adequada se necessário
+            $special->services->duration = $special->duration;
+        }
+
+        // Mesclar os dois conjuntos de resultados
+        $merged = $schedulings->merge($specialExits);
+
+        $schedulings = $merged;
+
 
         // Obtendo horários de abertura e fechamento
         $defaultSchedule = WeeklySchedule::where('special_day', false)->first();
@@ -118,7 +135,7 @@ class SchedulingController extends Controller
             $closing_time = '19:00';
         }
 
-        return view('scheduling.create-final', compact('professional', 'service', 'schedulings', 'service_id', 'id', 'date', 'opening_time', 'closing_time'));
+        return view('scheduling.create-final', compact('professional', 'service', 'specialExits', 'schedulings', 'service_id', 'id', 'date', 'opening_time', 'closing_time'));
     }
 
 
@@ -194,6 +211,8 @@ class SchedulingController extends Controller
         // Buscar os horários padrão para os dias não especiais
         $defaultSchedule = WeeklySchedule::where('special_day', false)->first();
 
+        $specialExits = SpecialExit::all();
+
         // Verificar se há um horário padrão
         if ($defaultSchedule) {
             $opening_time = \DateTime::createFromFormat('H:i:s', $defaultSchedule->opening_time)->format('H:i');
@@ -207,7 +226,7 @@ class SchedulingController extends Controller
         // Buscar os dias proibidos
         $prohibitedDays = ProhibitedDay::all()->groupBy('type');
 
-        return view('scheduling.times', compact('weeklySchedules', 'opening_time', 'closing_time', 'prohibitedDays'));
+        return view('scheduling.times', compact('weeklySchedules', 'opening_time', 'closing_time', 'prohibitedDays', 'specialExits'));
     }
 
 
@@ -381,6 +400,25 @@ class SchedulingController extends Controller
         return redirect()->back()->with('success', 'Feriados salvos com sucesso!');
     }
 
+
+    public function storeSpecialExit(Request $request)
+    {
+        // Valide os dados
+        $request->validate([
+            'day' => 'required',
+            'time' => 'required',
+            'duration' => 'required',
+        ]);
+
+        SpecialExit::create([
+            'date' => $request->day,
+            'time' => $request->time,
+            'duration' => $request->duration,
+        ]);
+    
+        return redirect()->back()->with('success', 'Saídas salvas com sucesso!');
+    }
+
     public function deleteDay(Request $request)
     {
         $request->validate([
@@ -391,6 +429,16 @@ class SchedulingController extends Controller
         ProhibitedDay::where('date', $request->date)->where('type', $request->type)->delete();
 
         return redirect()->back()->with('success', 'Dia proibido deletado com sucesso!');
+    }
+
+    public function deleteSpecialExit(Request $request){
+        $request->validate([
+            'date' => 'required',
+        ]);
+
+        SpecialExit::where('id', $request->date)->delete();
+
+        return redirect()->back()->with('success', 'Saída deletada com sucesso!');
     }
 
 
