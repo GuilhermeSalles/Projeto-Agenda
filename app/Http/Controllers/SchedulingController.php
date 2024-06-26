@@ -392,4 +392,71 @@ class SchedulingController extends Controller
 
         return redirect()->back()->with('success', 'Dia proibido deletado com sucesso!');
     }
+
+
+
+    public function adminCreate($id){
+
+        $professional = Professional::find($id);
+        $professionals = Professional::all();
+        $specializedServiceIds = $professional->specializations;
+        $services = Service::whereIn('id', $specializedServiceIds)->get();
+
+        return view('scheduling.create-admin', compact('professional', 'professionals', 'services'));
+
+        return true;
+    }
+
+    public function adminCreateSelectService($id, $service_id, Request $request)
+    {
+        $professional = Professional::find($id);
+        $service = Service::find($service_id);
+
+        $date = $request->query('date', Carbon::now('America/Sao_Paulo')->format('Y-m-d'));
+        $schedulings = Scheduling::where('pro', $id)
+            ->whereDate('date', $date) // Certifique-se de que a coluna da data seja correta
+            ->with('services')
+            ->get();
+
+        // Obtendo horários de abertura e fechamento
+        $defaultSchedule = WeeklySchedule::where('special_day', false)->first();
+        if ($defaultSchedule) {
+            $opening_time = Carbon::createFromFormat('H:i:s', $defaultSchedule->opening_time)->format('H:i');
+            $closing_time = Carbon::createFromFormat('H:i:s', $defaultSchedule->closing_time)->format('H:i');
+        } else {
+            // Definir horários padrão se não houver horários definidos
+            $opening_time = '09:00';
+            $closing_time = '19:00';
+        }
+
+        return view('scheduling.create-admin-final', compact('professional', 'service', 'schedulings', 'service_id', 'id', 'date', 'opening_time', 'closing_time'));
+    }
+
+    public function adminStore(Request $request)
+    {
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'phone' => 'required|string|max:20',
+            'pro' => 'required|integer',
+            'service' => 'required|integer',
+            'date' => 'required|date',
+            'time' => 'required|date_format:H:i',
+        ]);
+
+        $scheduling = new Scheduling();
+        $scheduling->name = $validatedData['name'];
+        $scheduling->phone = $validatedData['phone'];
+        $scheduling->pro = $validatedData['pro'];
+        $scheduling->service = $validatedData['service'];
+        $scheduling->date = $validatedData['date'];
+        $scheduling->time = $validatedData['time'];
+        $scheduling->save();
+
+        $professional = Professional::find($request->input('pro'));
+        $service = Service::find($request->input('service'));
+
+        return redirect(route('scheduling.all'));
+
+        //return view('scheduling.finishing', compact('scheduling', 'professional', 'service'));
+    }
 }
