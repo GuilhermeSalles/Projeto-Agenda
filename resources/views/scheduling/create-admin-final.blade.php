@@ -1,0 +1,216 @@
+@extends('admin.master')
+@extends('admin.get-status-form')
+
+@section('title', 'Finalizando Agendamento')
+
+@section('content')
+    <style>
+        .scheduling-form {}
+
+        .scheduling-form hr {
+            display: block;
+            margin: 20px 0px;
+        }
+
+        /* Estilos personalizados */
+        .scheduling-form form {
+            width: 80%;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .scheduling-form form .form-group {
+            margin-bottom: 20px;
+        }
+
+        .scheduling-form,
+        .scheduling-form input,
+        .scheduling-form select {
+            font-size: 2vw;
+        }
+
+        .scheduling-form .button {
+            margin-top: 40px;
+        }
+
+        .professional {
+            text-align: center;
+        }
+
+        .voltar {
+            padding: 1rem;
+            margin-left: 1.5rem;
+        }
+
+        /* Estilo para todos os inputs */
+        .scheduling-form input[type=text],
+        .scheduling-form input[type=date],
+        .scheduling-form select {
+            padding: 11px 10px;
+            font-size: 1.25rem;
+            border: 2px var(--first-color) solid;
+            border-radius: 5px;
+            background: white;
+            width: 100%;
+            margin-top: 0.5rem;
+            box-sizing: border-box;
+            /* Garante que o padding não aumente a largura do input */
+        }
+
+        .scheduling-form input[type=text]:focus,
+        .scheduling-form input[type=date]:focus,
+        .scheduling-form select:focus {
+            outline: none;
+        }
+
+        .scheduling-form label {
+            font-size: 1.25rem;
+            color: var(--title-color);
+            margin-bottom: 0.5rem;
+            display: block;
+            text-align: center;
+        }
+
+        hr.style-eight {
+            overflow: visible;
+            /* For IE */
+            padding: 0;
+            border: none;
+            border-top: medium double var(--title-color);
+            color: var(--title-color);
+            text-align: center;
+        }
+
+        hr.style-eight:after {
+            content: "TG";
+            display: inline-block;
+            position: relative;
+            top: -0.7em;
+            font-size: 1.5em;
+            padding: 0 0.2em;
+            background: var(--first-color);
+            color: white;
+            border-radius: 30%
+        }
+    </style>
+
+    <!--==================== WHO ====================-->
+    <section class="who section" id="who">
+        @include('layouts.get-status-form')
+    
+        <div class="container">
+
+        <h2 class="popular__name">{{ $service->name }}</h2>
+            <span class="popular__description">{{ $service->description }}</span>
+            <span class="popular__price">R$ {{ $service->value }}</span>
+            <div class="row" style="text-align: center;">
+                <div class="col-md-6">
+                    <form class="scheduling-form" method="POST" action="{{ route('scheduling.admin.store') }}">
+                        @csrf
+
+                        <input type="hidden" name="pro" value="{{ $professional->id }}">
+                        <input type="hidden" name="service" value="{{ $service->id }}">
+
+                        <?php
+                        use Carbon\Carbon;
+                        ?>
+
+                        <div class="coolinput">
+                            <label for="">Data</label>
+                            <input type="date" name="date" id="date" min="{{ Carbon::parse($date)->format('Y-m-d') }}"
+                                value="{{ Carbon::parse($date)->format('Y-m-d') }}">
+                        </div>
+
+                        <script>
+                            document.getElementById('date').addEventListener('change', function() {
+                                const date = this.value;
+                                const id = '<?php echo $id; ?>'; // Substitua pelo ID apropriado
+                                const service_id = '<?php echo $service_id; ?>'; // Substitua pelo ID do serviço apropriado
+
+                                const url = `/scheduling/admin/create/${id}/service/${service_id}?date=${date}`;
+
+                                // Recarregar a página com a nova URL
+                                window.location.href = url;
+                            });
+                        </script>
+
+                        <div class="coolinput">
+                            <label>Horário </label>
+                            <?php
+                            // Crie um array associativo para mapear os horários dos agendamentos
+                            $schedulingTimes = [];
+                            foreach ($schedulings as $scheduling) {
+                                // Converta o formato "00:00:00" para "00:00"
+                                $formattedTime = substr($scheduling->time, 0, 5);
+                                $schedulingTimes[$formattedTime] = $formattedTime;
+
+                                // Obtenha a duração do serviço em minutos
+                                $durationMinutes = (int) $scheduling->services->duration;
+
+                                // Calcule quantos intervalos de 30 minutos são necessários
+                                $intervals = ceil($durationMinutes / 30);
+
+                                // Adicione os horários ocupados ao array
+                                $startedTime = $formattedTime;
+                                for ($i = 1; $i < $intervals; $i++) {
+                                    $newTime = date('H:i', strtotime($startedTime . ' + 30 minutes'));
+                                    $schedulingTimes[$newTime] = $newTime;
+                                    $startedTime = $newTime;
+                                }
+                            }
+                            ?>
+
+                            <style>
+                                .scheduling {
+                                    color: red;
+                                    /* Define a cor dos horários com agendamento */
+                                }
+                            </style>
+
+                            <select name="time" id="time">
+                                <?php
+                                // Convertendo $opening_time e $closing_time para objetos Carbon
+                                $openingTime = Carbon::createFromFormat('H:i', $opening_time);
+                                $closingTime = Carbon::createFromFormat('H:i', $closing_time);
+
+                                // Iterando de $openingTime a $closingTime em intervalos de 30 minutos
+                                $currentTime = $openingTime;
+                                while ($currentTime < $closingTime) {
+                                    $time = $currentTime->format('H:i');
+                                    
+                                    // Verifique se há um agendamento para o horário atual
+                                    if (isset($schedulingTimes[$time])) {
+                                        echo "<option value='$time' disabled>$time - agendado</option>";
+                                    } else {
+                                        echo "<option value='$time'>$time</option>";
+                                    }
+
+                                    // Incrementar 30 minutos
+                                    $currentTime->addMinutes(30);
+                                }
+                                ?>
+                            </select>
+                        </div>
+
+                        <br>
+                        <hr class="style-eight">
+
+                        <div class="coolinput">
+                            <label for="">Nome</label>
+                            <input type="text" name="name" id="name" placeholder="Escreva seu nome aqui!">
+                        </div>
+                        <div class="coolinput">
+                            <label for="">Telefone</label>
+                            <input type="text" name="phone" id="phone" placeholder="(xx)xxxxx-xxxx" value="">
+                        </div>
+
+                        <div class="form-group" style="text-align: center">
+                            <button class="button" type="submit"> <i class="ri-calendar-check-line"></i>
+                                Agendar</i></button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+@endsection
