@@ -135,8 +135,11 @@
                         @endforeach
                     </select>
 
-                    <a class="button" href="{{ route('scheduling.all', ['date' => now('America/Sao_Paulo')->format('Y-m-d')]) }}">Hoje</a>
-                    <a class="button" href="{{ route('scheduling.admin.create', auth()->user()->id) }}">Adicionar</a>
+                    <a class="button"
+                        href="{{ route('scheduling.all', ['date' => now('America/Sao_Paulo')->format('Y-m-d')]) }}"
+                        style="margin-right: 10px;">Hoje</a>
+                    <a class="button" href="{{ route('scheduling.admin.create', auth()->user()->id) }}"
+                        style="margin-left: 10px;">Adicionar</a>
                 </div>
 
                 <!-- Saldo -->
@@ -148,7 +151,8 @@
                     @foreach ($schedulings as $scheduling)
                         <li class="agendamentos-list">
                             <span>{{ explode(' ', $scheduling->name)[0] }}</span>
-                            <span style="font-size: .7rem;">{{ \App\Models\Service::find($scheduling->service)->name }}</span>
+                            <span
+                                style="font-size: .7rem;">{{ \App\Models\Service::find($scheduling->service)->name }}</span>
                             <span>{{ \Carbon\Carbon::createFromFormat('H:i:s', $scheduling->time)->format('H:i') }}</span>
                             {{-- {{ \Carbon\Carbon::createFromFormat('Y-m-d', $scheduling->date)->format('d-m') }}   --}}
                             <div class="dropdown">

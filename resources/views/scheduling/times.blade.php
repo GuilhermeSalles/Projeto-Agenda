@@ -223,21 +223,28 @@
                     </form>
                 @endif
 
+                <br>
+                <br>
 
                 {{-- Formulário para Saídas Especiais --}}
                 <h3 class="section__subtitle" style="text-align: center; color: #333; ">Saídas Especiais</h3>
                 <form action="{{ route('scheduling.store.special-exit') }}" method="POST">
                     @csrf
                     <div class="form-group">
-                        <label for="holidays">Dia</label>
-                        <input type="date" name="day" id="day" class="form-control" multiple required>
+                        <label for="day">Data:</label>
+                        <input type="date" name="day" id="day" class="form-control"
+                            min="{{ date('Y-m-d') }}" required>
 
-                        <label for="holidays">Horário</label>
-                        <input type="time" name="time" id="time" class="form-control" multiple required>
+                        <label for="time">Horário</label>
+                        <input type="time" name="time" id="time" class="form-control" required>
 
-
-                        <label for="holidays">Duração</label>
-                        <input type="text" name="duration" id="duration" class="form-control" multiple required>
+                        <label for="duration">Duração</label>
+                        <select name="duration" id="duration" class="form-control" required>
+                            <option value="30">30 minutos</option>
+                            <option value="60">1 hora</option>
+                            <option value="90">1 hora e 30 minutos</option>
+                            <option value="120">2 horas</option>
+                        </select>
                     </div>
 
                     <br>
@@ -245,21 +252,24 @@
                     <button type="submit" class="btn btn-primary">Salvar</button>
                 </form>
 
+
+                <br>
+                <br>
+
                 @if (isset($specialExits))
-                    <h4>Saídas Registradas:</h4>
-                    <ul>
-                        @foreach ($specialExits as $day)
-                            <li>{{ $day->date }}</li>
-                        @endforeach
-                    </ul>
+                    <h3 style="text-align: center; color: #333;">Saídas Registradas:</h3>
+                    <br>
 
                     <form action="{{ route('scheduling.delete.special-exit') }}" method="POST">
                         @csrf
                         <div class="form-group">
-                            <label for="holiday_delete">Deletar Saída</label>
+                            <label for="date">Deletar Saída</label>
                             <select name="date" id="date" class="form-control" required>
                                 @foreach ($specialExits as $day)
-                                    <option value="{{ $day->id }}">{{ $day->date }}</option>
+                                    <option value="{{ $day->id }}">
+                                        {{ \Carbon\Carbon::createFromFormat('Y-m-d', $day->date)->format('d/m') }}
+                                        {{ \Carbon\Carbon::createFromFormat('H:i:s', $day->time)->format('H:i') }}
+                                    </option>
                                 @endforeach
                             </select>
                             <input type="hidden" name="type" value="holiday">
@@ -279,6 +289,15 @@
     <br>
 
     <style>
+        .centered-list {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            list-style-type: none;
+            padding-left: 0;
+        }
+
         /* Estilo para o formulário */
         .form-group {
             margin-bottom: 1rem;

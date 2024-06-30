@@ -113,7 +113,7 @@ class SchedulingController extends Controller
         $specialExits = SpecialExit::whereDate('date', $date)->get();
 
 
-        foreach($specialExits as $special){
+        foreach ($specialExits as $special) {
             $special->services = new \stdClass(); // ou use uma classe adequada se necessário
             $special->services->duration = $special->duration;
         }
@@ -405,9 +405,9 @@ class SchedulingController extends Controller
     {
         // Valide os dados
         $request->validate([
-            'day' => 'required',
-            'time' => 'required',
-            'duration' => 'required',
+            'day' => 'required|date',
+            'time' => 'required|date_format:H:i',
+            'duration' => 'required|numeric',
         ]);
 
         SpecialExit::create([
@@ -415,9 +415,10 @@ class SchedulingController extends Controller
             'time' => $request->time,
             'duration' => $request->duration,
         ]);
-    
+
         return redirect()->back()->with('success', 'Saídas salvas com sucesso!');
     }
+
 
     public function deleteDay(Request $request)
     {
@@ -431,7 +432,8 @@ class SchedulingController extends Controller
         return redirect()->back()->with('success', 'Dia proibido deletado com sucesso!');
     }
 
-    public function deleteSpecialExit(Request $request){
+    public function deleteSpecialExit(Request $request)
+    {
         $request->validate([
             'date' => 'required',
         ]);
@@ -443,7 +445,8 @@ class SchedulingController extends Controller
 
 
 
-    public function adminCreate($id){
+    public function adminCreate($id)
+    {
 
         $professional = Professional::find($id);
         $professionals = Professional::all();
