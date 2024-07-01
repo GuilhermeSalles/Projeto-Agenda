@@ -64,56 +64,30 @@
                     margin-right: 8px;
                 }
 
-                .agendamentos-list {
-                    border: none;
-                    margin: 10px 10px;
-                    padding: 15px 10px;
-                    border-radius: 10px;
-                    display: flex;
-                    flex-direction: row;
-                    justify-content: space-between;
-                    align-items: center;
-                    box-shadow: #ccc 0px 0px 5px;
-                }
-
                 .dropdown {
                     position: relative;
                     display: inline-block;
                 }
 
-                .dropdown-toggle {
-                    background-color: #d4823a;
-                    color: #fff;
-                    padding: 10px 20px;
-                    border: none;
-                    cursor: pointer;
-                    border-radius: .5rem;
-                }
-
-                .dropdown-menu {
-                    display: none;
-                    position: absolute;
-                    background-color: #fff;
-                    border-radius: .5rem;
-                    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-                    z-index: 1;
-                    max-width: 100%;
-                }
-
-                .dropdown-item {
-                    border-radius: 5px;
+                .dropdown-select {
+                    background-color: #f8f9fa;
                     color: #333;
-                    padding: 12px 16px;
-                    text-decoration: none;
-                    display: block;
+                    padding: 10px 20px;
+                    border: 1px solid #d4823a;
+                    border-radius: .5rem;
+                    cursor: pointer;
                 }
 
-                .dropdown-item:hover {
-                    background-color: #d4823a;
-                }
-
-                .dropdown:hover .dropdown-menu {
-                    display: block;
+                .agendamentos-list {
+                    border: none;
+                   
+                    padding: 15px 10px;
+                    border-radius: 10px;
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: space-between;
+                    align-items: baseline;
+                    box-shadow: #ccc 0px 0px 5px;
                 }
 
                 #chart-container {
@@ -154,53 +128,79 @@
                             <span
                                 style="font-size: .7rem;">{{ \App\Models\Service::find($scheduling->service)->name }}</span>
                             <span>{{ \Carbon\Carbon::createFromFormat('H:i:s', $scheduling->time)->format('H:i') }}</span>
-                            {{-- {{ \Carbon\Carbon::createFromFormat('Y-m-d', $scheduling->date)->format('d-m') }}   --}}
                             <div class="dropdown">
-                                <button class="dropdown-toggle">Ações</button>
-                                <div class="dropdown-menu">
+                                <select class="dropdown-select"
+                                    onchange="handleActionChange(this, '{{ $scheduling->id }}')">
+                                    <option value="">Ações</option>
                                     @switch($scheduling->fulfilled)
                                         @case(0)
-                                            <form method="POST" action="{{ route('scheduling.cancel') }}">
-                                                @csrf
-                                                <input type='hidden' name="id" value="{{ $scheduling->id }}">
-                                                <button type="submit" class="dropdown-item">Cancelar</button>
-                                            </form>
-
-                                            <form method="POST" action="{{ route('scheduling.finishe') }}">
-                                                @csrf
-                                                <input type='hidden' name="id" value="{{ $scheduling->id }}">
-                                                <button type="submit" class="dropdown-item">Concluir</button>
-                                            </form>
+                                            <option value="cancel">Cancelar</option>
+                                            <option value="concluir">Concluir</option>
                                         @break
 
                                         @case(1)
-                                            <span class="dropdown-item">Concluído</span>
-
-                                            <form method="POST" action="{{ route('scheduling.reset') }}">
-                                                @csrf
-                                                <input type='hidden' name="id" value="{{ $scheduling->id }}">
-                                                <button type="submit" class="dropdown-item">Reabrir</button>
-                                            </form>
+                                            <option value="reabrir">Reabrir</option>
                                         @break
 
                                         @case(2)
-                                            <span class="dropdown-item">Cancelado</span>
-
-                                            <form method="POST" action="{{ route('scheduling.reset') }}">
-                                                @csrf
-                                                <input type='hidden' name="id" value="{{ $scheduling->id }}">
-                                                <button type="submit" class="dropdown-item">Reabrir</button>
-                                            </form>
+                                            <option value="reabrir">Reabrir</option>
                                         @break
 
                                         @default
-                                            <span class="dropdown-item">Algo deu errado, por favor tente novamente!</span>
+                                            <option value="">Algo deu errado</option>
                                     @endswitch
-                                </div>
+                                </select>
                             </div>
                         </li>
                     @endforeach
                 </ul>
+
+                <script>
+                    function handleActionChange(select, id) {
+                        const value = select.value;
+                        if (value === 'cancel') {
+                            document.getElementById(`cancel-form-${id}`).submit();
+                        } else if (value === 'concluir') {
+                            document.getElementById(`concluir-form-${id}`).submit();
+                        } else if (value === 'reabrir') {
+                            document.getElementById(`reabrir-form-${id}`).submit();
+                        }
+                    }
+                </script>
+
+                @foreach ($schedulings as $scheduling)
+                    @switch($scheduling->fulfilled)
+                        @case(0)
+                            <form id="cancel-form-{{ $scheduling->id }}" method="POST" action="{{ route('scheduling.cancel') }}"
+                                style="display: none;">
+                                @csrf
+                                <input type='hidden' name="id" value="{{ $scheduling->id }}">
+                            </form>
+
+                            <form id="concluir-form-{{ $scheduling->id }}" method="POST"
+                                action="{{ route('scheduling.finishe') }}" style="display: none;">
+                                @csrf
+                                <input type='hidden' name="id" value="{{ $scheduling->id }}">
+                            </form>
+                        @break
+
+                        @case(1)
+                            <form id="reabrir-form-{{ $scheduling->id }}" method="POST" action="{{ route('scheduling.reset') }}"
+                                style="display: none;">
+                                @csrf
+                                <input type='hidden' name="id" value="{{ $scheduling->id }}">
+                            </form>
+                        @break
+
+                        @case(2)
+                            <form id="reabrir-form-{{ $scheduling->id }}" method="POST" action="{{ route('scheduling.reset') }}"
+                                style="display: none;">
+                                @csrf
+                                <input type='hidden' name="id" value="{{ $scheduling->id }}">
+                            </form>
+                        @break
+                    @endswitch
+                @endforeach
             </section>
 
             <!-- Gráfico com Chart.js -->

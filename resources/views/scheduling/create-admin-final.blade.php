@@ -17,6 +17,9 @@
             width: 80%;
             margin: 0 auto;
             text-align: center;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
         }
 
         .scheduling-form form .form-group {
@@ -51,6 +54,7 @@
             border: 2px var(--first-color) solid;
             border-radius: 5px;
             background: white;
+            color: var(--title-color);
             width: 100%;
             margin-top: 0.5rem;
             box-sizing: border-box;
@@ -90,127 +94,177 @@
             padding: 0 0.2em;
             background: var(--first-color);
             color: white;
-            border-radius: 30%
+            border-radius: 30%;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            background-color: white;
+            padding: 20px 0;
+            /* Padding superior e inferior */
+            border-radius: 8px;
+        }
+
+        .coolinput {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .form-group {
+            display: flex;
+            justify-content: center;
+        }
+
+        .button {
+            background-color: var(--first-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .button:hover {
+            background-color: var(--second-color);
+        }
+
+        .popular__name,
+        .popular__description,
+        .popular__price {
+            color: var(--title-color);
         }
     </style>
 
-    <!--==================== WHO ====================-->
-    <section class="who section" id="who">
-        @include('layouts.get-status-form')
-    
-        <div class="container">
 
-        <h2 class="popular__name">{{ $service->name }}</h2>
-            <span class="popular__description">{{ $service->description }}</span>
-            <span class="popular__price">R$ {{ $service->value }}</span>
-            <div class="row" style="text-align: center;">
-                <div class="col-md-6">
-                    <form class="scheduling-form" method="POST" action="{{ route('scheduling.admin.store') }}">
-                        @csrf
-
-                        <input type="hidden" name="pro" value="{{ $professional->id }}">
-                        <input type="hidden" name="service" value="{{ $service->id }}">
-
-                        <?php
-                        use Carbon\Carbon;
-                        ?>
-
-                        <div class="coolinput">
-                            <label for="">Data</label>
-                            <input type="date" name="date" id="date" min="{{ Carbon::parse($date)->format('Y-m-d') }}"
-                                value="{{ Carbon::parse($date)->format('Y-m-d') }}">
-                        </div>
-
-                        <script>
-                            document.getElementById('date').addEventListener('change', function() {
-                                const date = this.value;
-                                const id = '<?php echo $id; ?>'; // Substitua pelo ID apropriado
-                                const service_id = '<?php echo $service_id; ?>'; // Substitua pelo ID do serviço apropriado
-
-                                const url = `/scheduling/admin/create/${id}/service/${service_id}?date=${date}`;
-
-                                // Recarregar a página com a nova URL
-                                window.location.href = url;
-                            });
-                        </script>
-
-                        <div class="coolinput">
-                            <label>Horário </label>
-                            <?php
-                            // Crie um array associativo para mapear os horários dos agendamentos
-                            $schedulingTimes = [];
-                            foreach ($schedulings as $scheduling) {
-                                // Converta o formato "00:00:00" para "00:00"
-                                $formattedTime = substr($scheduling->time, 0, 5);
-                                $schedulingTimes[$formattedTime] = $formattedTime;
-
-                                // Obtenha a duração do serviço em minutos
-                                $durationMinutes = (int) $scheduling->services->duration;
-
-                                // Calcule quantos intervalos de 30 minutos são necessários
-                                $intervals = ceil($durationMinutes / 30);
-
-                                // Adicione os horários ocupados ao array
-                                $startedTime = $formattedTime;
-                                for ($i = 1; $i < $intervals; $i++) {
-                                    $newTime = date('H:i', strtotime($startedTime . ' + 30 minutes'));
-                                    $schedulingTimes[$newTime] = $newTime;
-                                    $startedTime = $newTime;
-                                }
-                            }
-                            ?>
-
-                            <style>
-                                .scheduling {
-                                    color: red;
-                                    /* Define a cor dos horários com agendamento */
-                                }
-                            </style>
-
-                            <select name="time" id="time">
-                                <?php
-                                // Convertendo $opening_time e $closing_time para objetos Carbon
-                                $openingTime = Carbon::createFromFormat('H:i', $opening_time);
-                                $closingTime = Carbon::createFromFormat('H:i', $closing_time);
-
-                                // Iterando de $openingTime a $closingTime em intervalos de 30 minutos
-                                $currentTime = $openingTime;
-                                while ($currentTime < $closingTime) {
-                                    $time = $currentTime->format('H:i');
-                                    
-                                    // Verifique se há um agendamento para o horário atual
-                                    if (isset($schedulingTimes[$time])) {
-                                        echo "<option value='$time' disabled>$time - agendado</option>";
-                                    } else {
-                                        echo "<option value='$time'>$time</option>";
-                                    }
-
-                                    // Incrementar 30 minutos
-                                    $currentTime->addMinutes(30);
-                                }
-                                ?>
-                            </select>
-                        </div>
-
-                        <br>
-                        <hr class="style-eight">
-
-                        <div class="coolinput">
-                            <label for="">Nome</label>
-                            <input type="text" name="name" id="name" placeholder="Escreva seu nome aqui!">
-                        </div>
-                        <div class="coolinput">
-                            <label for="">Telefone</label>
-                            <input type="text" name="phone" id="phone" placeholder="(xx)xxxxx-xxxx" value="">
-                        </div>
-
-                        <div class="form-group" style="text-align: center">
-                            <button class="button" type="submit"> <i class="ri-calendar-check-line"></i>
-                                Agendar</i></button>
-                        </div>
-                    </form>
-                </div>
+    <div class="container">
+        <div class="section">
+            <div class="content">
+                <h2 style="color: black">Agendar</h2>
             </div>
         </div>
-    </section>
-@endsection
+    </div>
+
+    <!--==================== WHO ====================-->
+
+    @include('layouts.get-status-form')
+
+    <div class="container" style="margin-bottom: 9rem;">
+        <h2 class="popular__name">{{ $service->name }}</h2>
+        <span class="popular__description">{{ $service->description }}</span>
+        <span class="popular__price">R$ {{ $service->value }}</span>
+        <div class="row" style="text-align: center;">
+            <div class="col-md-6">
+                <form class="scheduling-form" method="POST" action="{{ route('scheduling.admin.store') }}">
+                    @csrf
+
+                    <input type="hidden" name="pro" value="{{ $professional->id }}">
+                    <input type="hidden" name="service" value="{{ $service->id }}">
+
+                    <?php
+                    use Carbon\Carbon;
+                    ?>
+
+                    <div class="coolinput">
+                        <label for="">Data</label>
+                        <input type="date" name="date" id="date"
+                            min="{{ Carbon::parse($date)->format('Y-m-d') }}"
+                            value="{{ Carbon::parse($date)->format('Y-m-d') }}">
+                    </div>
+
+                    <script>
+                        document.getElementById('date').addEventListener('change', function() {
+                            const date = this.value;
+                            const id = '<?php echo $id; ?>'; // Substitua pelo ID apropriado
+                            const service_id = '<?php echo $service_id; ?>'; // Substitua pelo ID do serviço apropriado
+
+                            const url = `/scheduling/admin/create/${id}/service/${service_id}?date=${date}`;
+
+                            // Recarregar a página com a nova URL
+                            window.location.href = url;
+                        });
+                    </script>
+
+                    <div class="coolinput">
+                        <label>Horário </label>
+                        <?php
+                        // Crie um array associativo para mapear os horários dos agendamentos
+                        $schedulingTimes = [];
+                        foreach ($schedulings as $scheduling) {
+                            // Converta o formato "00:00:00" para "00:00"
+                            $formattedTime = substr($scheduling->time, 0, 5);
+                            $schedulingTimes[$formattedTime] = $formattedTime;
+                        
+                            // Obtenha a duração do serviço em minutos
+                            $durationMinutes = (int) $scheduling->services->duration;
+                        
+                            // Calcule quantos intervalos de 30 minutos são necessários
+                            $intervals = ceil($durationMinutes / 30);
+                        
+                            // Adicione os horários ocupados ao array
+                            $startedTime = $formattedTime;
+                            for ($i = 1; $i < $intervals; $i++) {
+                                $newTime = date('H:i', strtotime($startedTime . ' + 30 minutes'));
+                                $schedulingTimes[$newTime] = $newTime;
+                                $startedTime = $newTime;
+                            }
+                        }
+                        ?>
+
+                        <style>
+                            .scheduling {
+                                color: red;
+                                /* Define a cor dos horários com agendamento */
+                            }
+                        </style>
+
+                        <select name="time" id="time">
+                            <?php
+                            // Convertendo $opening_time e $closing_time para objetos Carbon
+                            $openingTime = Carbon::createFromFormat('H:i', $opening_time);
+                            $closingTime = Carbon::createFromFormat('H:i', $closing_time);
+                            
+                            // Iterando de $openingTime a $closingTime em intervalos de 30 minutos
+                            $currentTime = $openingTime;
+                            while ($currentTime < $closingTime) {
+                                $time = $currentTime->format('H:i');
+                            
+                                // Verifique se há um agendamento para o horário atual
+                                if (isset($schedulingTimes[$time])) {
+                                    echo "<option value='$time' disabled>$time - agendado</option>";
+                                } else {
+                                    echo "<option value='$time'>$time</option>";
+                                }
+                            
+                                // Incrementar 30 minutos
+                                $currentTime->addMinutes(30);
+                            }
+                            ?>
+                        </select>
+                    </div>
+
+                    <br>
+                    <hr class="style-eight">
+
+                    <div class="coolinput">
+                        <label for="">Nome</label>
+                        <input type="text" name="name" id="name" placeholder="Escreva seu nome aqui!">
+                    </div>
+                    <div class="coolinput">
+                        <label for="">Telefone</label>
+                        <input type="text" name="phone" id="phone" placeholder="(xx)xxxxx-xxxx" value="">
+                    </div>
+
+                    <div class="form-group" style="text-align: center">
+                        <button class="button" type="submit"> <i class="ri-calendar-check-line"></i>
+                            Agendar</i></button>
+                    </div>
+                </form>
+            </div>
+        </div>
+</div @endsection
