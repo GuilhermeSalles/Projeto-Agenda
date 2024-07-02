@@ -114,7 +114,7 @@ class SchedulingController extends Controller
 
 
         foreach($specialExits as $special){
-            $special->services = new \stdClass(); // ou use uma classe adequada se necessário
+            $special->services = new \stdClass();
             $special->services->duration = $special->duration;
         }
 
