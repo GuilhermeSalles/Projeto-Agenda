@@ -38,6 +38,8 @@
                             {{ $daysOfWeek[$day] }}<br>
                         @endforeach
                     </span>
+                    
+                    <br>
 
                     <a href="{{ route('scheduling.create', [$professional->id]) }}" class="button agendar">
                         Agendar Agora<i class="ri-arrow-right-circle-line"></i>
