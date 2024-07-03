@@ -228,15 +228,87 @@
 
                 {{-- Formulário para Saídas Especiais --}}
                 <h3 class="section__subtitle" style="text-align: center; color: #333; ">Saídas Especiais</h3>
-                <form action="{{ route('scheduling.store.special-exit') }}" method="POST">
+                <form id="special-exits" action="{{ route('scheduling.store.special-exit') }}" method="POST">
                     @csrf
                     <div class="form-group">
                         <label for="day">Data:</label>
-                        <input type="date" name="day" id="day" class="form-control"
-                            min="{{ date('Y-m-d') }}" required>
+                        <input type="date" name="day" id="day" class="form-control" min="{{ date('Y-m-d') }}"
+                            value="{{ $specialDay }}" required>
 
-                        <label for="time">Horário</label>
-                        <input type="time" name="time" id="time" class="form-control" required>
+                            <script>
+                            document.getElementById('day').addEventListener('change', function() {
+                                const date = this.value;
+                
+                                const url = `/admin/times?date=${date}#special-exits`;
+
+                                // Recarregar a página com a nova URL
+                                window.location.href = url;
+                            });
+                        </script>
+
+                        <?php
+                        use Carbon\Carbon;
+                        ?>
+
+                        <div class="coolinput">
+                            <label>Horário </label>
+
+                            <?php
+                            
+                            // Crie um array associativo para mapear os horários dos agendamentos
+                            $schedulingTimes = [];
+                            foreach ($schedulings as $scheduling) {
+                                // Converta o formato "00:00:00" para "00:00"
+                                $formattedTime = substr($scheduling->time, 0, 5);
+                                $schedulingTimes[$formattedTime] = $formattedTime;
+
+                                // Obtenha a duração do serviço em minutos
+                                $durationMinutes = (int) $scheduling->services->duration;
+
+                                // Calcule quantos intervalos de 30 minutos são necessários
+                                $intervals = ceil($durationMinutes / 30);
+
+                                // Adicione os horários ocupados ao array
+                                $startedTime = $formattedTime;
+                                for ($i = 1; $i < $intervals; $i++) {
+                                    $newTime = date('H:i', strtotime($startedTime . ' + 30 minutes'));
+                                    $schedulingTimes[$newTime] = $newTime;
+                                    $startedTime = $newTime;
+                                }
+                            }
+                            ?>
+
+                            <style>
+                                .scheduling {
+                                    color: red;
+                                    /* Define a cor dos horários com agendamento */
+                                }
+                            </style>
+
+                            <select name="time" id="time" class="form-control">
+                                <?php
+                                // Convertendo $opening_time e $closing_time para objetos Carbon
+                                $openingTime = Carbon::createFromFormat('H:i', $opening_time);
+                                $closingTime = Carbon::createFromFormat('H:i', $closing_time);
+
+                                // Iterando de $openingTime a $closingTime em intervalos de 30 minutos
+                                $currentTime = $openingTime;
+                                while ($currentTime < $closingTime) {
+                                    $time = $currentTime->format('H:i');
+                                    
+                                    // Verifique se há um agendamento para o horário atual
+                                    if (isset($schedulingTimes[$time])) {
+                                        echo "<option value='$time' disabled>$time - agendado</option>";
+                                    } else {
+                                        echo "<option value='$time'>$time</option>";
+                                    }
+
+                                    // Incrementar 30 minutos
+                                    $currentTime->addMinutes(30);
+                                }
+                                ?>
+                            </select>
+                        </div>
 
                         <label for="duration">Duração</label>
                         <select name="duration" id="duration" class="form-control" required>

@@ -225,7 +225,36 @@ class SchedulingController extends Controller
         // Buscar os dias proibidos
         $prohibitedDays = ProhibitedDay::all()->groupBy('type');
 
-        return view('scheduling.times', compact('weeklySchedules', 'opening_time', 'closing_time', 'prohibitedDays', 'specialExits'));
+
+        /* SCHEDULINGS */
+
+        $professional = Professional::find(auth()->user()->id);
+        //$service = Service::find($service_id);
+
+        $date = $request->query('date', Carbon::now('America/Sao_Paulo')->format('Y-m-d'));
+
+        $specialDay = $date;
+
+        $schedulings = Scheduling::where('pro', auth()->user()->id)
+            ->whereDate('date', $date) // Certifique-se de que a coluna da data seja correta
+            ->with('services')
+            ->get();
+
+        //$specialExits = SpecialExit::whereDate('date', $date);
+        $specialExitsCreated = SpecialExit::whereDate('date', $date)->get();
+
+        foreach($specialExitsCreated as $special){
+            $special->services = new \stdClass();
+            $special->services->duration = $special->duration;
+        }
+
+        // Mesclar os dois conjuntos de resultados
+        $merged = $schedulings->merge($specialExitsCreated);
+
+        $schedulings = $merged;
+
+
+        return view('scheduling.times', compact('weeklySchedules', "specialDay", "specialExitsCreated", "schedulings",'opening_time', 'closing_time', 'prohibitedDays', 'specialExits'));
     }
 
 
