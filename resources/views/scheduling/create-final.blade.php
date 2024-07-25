@@ -135,6 +135,8 @@
                                 value="{{ Carbon::parse($date)->format('Y-m-d') }}">
                         </div>
 
+                        
+
                         <script>
                             document.getElementById('date').addEventListener('change', function() {
                                 const date = this.value;

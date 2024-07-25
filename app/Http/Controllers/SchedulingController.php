@@ -488,6 +488,11 @@ class SchedulingController extends Controller
 
     public function adminCreateSelectService($id, $service_id, Request $request)
     {
+
+
+
+
+
         $professional = Professional::find($id);
         $service = Service::find($service_id);
 
@@ -507,6 +512,37 @@ class SchedulingController extends Controller
             $opening_time = '09:00';
             $closing_time = '19:00';
         }
+
+
+
+
+
+               /* SCHEDULINGS */
+
+               $professional = Professional::find(auth()->user()->id);
+               //$service = Service::find($service_id);
+       
+               $date = $request->query('date', Carbon::now('America/Sao_Paulo')->format('Y-m-d'));
+       
+               $specialDay = $date;
+       
+               $schedulings = Scheduling::where('pro', auth()->user()->id)
+                   ->whereDate('date', $date) // Certifique-se de que a coluna da data seja correta
+                   ->with('services')
+                   ->get();
+       
+               //$specialExits = SpecialExit::whereDate('date', $date);
+               $specialExitsCreated = SpecialExit::whereDate('date', $date)->get();
+       
+               foreach($specialExitsCreated as $special){
+                   $special->services = new \stdClass();
+                   $special->services->duration = $special->duration;
+               }
+       
+               // Mesclar os dois conjuntos de resultados
+               $merged = $schedulings->merge($specialExitsCreated);
+       
+               $schedulings = $merged;
 
         return view('scheduling.create-admin-final', compact('professional', 'service', 'schedulings', 'service_id', 'id', 'date', 'opening_time', 'closing_time'));
     }
