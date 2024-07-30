@@ -364,7 +364,7 @@ body.dark-theme {
 
 @media screen and (max-width: 767px) {
   .container {
-    margin: 1.3rem;
+    margin: 0.6rem;
   }
 }
 

@@ -4,9 +4,8 @@
 @section('title', 'Finalizando Agendamento')
 
 @section('content')
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <style>
-        .scheduling-form {}
-
         .scheduling-form hr {
             display: block;
             margin: 20px 0px;
@@ -103,7 +102,7 @@
             align-items: center;
             text-align: center;
             background-color: white;
-            padding: 20px 0;
+            padding: 10px 0;
             /* Padding superior e inferior */
             border-radius: 8px;
         }
@@ -139,13 +138,24 @@
         .popular__price {
             color: var(--title-color);
         }
+
+        .flatpickr-day.disabled-day {
+            background-color: #ffcccc !important;
+            /* Fundo vermelho */
+            color: black !important;
+            /* Texto preto */
+            pointer-events: none;
+            /* Evita interações */
+            cursor: not-allowed;
+            /* Muda o cursor para indicar que é desativado */
+        }
     </style>
 
 
     <div class="container">
         <div class="section">
             <div class="content">
-                <h2 style="color: black">Agendar</h2>
+                <h2>Agendar</h2>
             </div>
         </div>
     </div>
@@ -171,22 +181,103 @@
                     ?>
 
                     <div class="coolinput">
-                        <label for="">Data</label>
-                        <input type="date" name="date" id="date"
-                            min="{{ Carbon::parse($date)->format('Y-m-d') }}"
-                            value="{{ Carbon::parse($date)->format('Y-m-d') }}">
+                        <label for="date1">Data:</label>
+                        <input type="text" id="date1" name="date1">
+
+                        <!-- Campo de data escondido que será enviado para o banco de dados -->
+                        <input type="hidden" id="date" name="date">
                     </div>
 
+                    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+                    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/pt.js"></script>
                     <script>
-                        document.getElementById('date').addEventListener('change', function() {
-                            const date = this.value;
-                            const id = '<?php echo $id; ?>'; // Substitua pelo ID apropriado
-                            const service_id = '<?php echo $service_id; ?>'; // Substitua pelo ID do serviço apropriado
+                        document.addEventListener('DOMContentLoaded', function() {
+                            var today = new Date();
+                            var formattedToday = today.toLocaleDateString('pt-BR', {
+                                day: '2-digit',
+                                month: '2-digit',
+                                year: 'numeric'
+                            });
 
-                            const url = `/scheduling/admin/create/${id}/service/${service_id}?date=${date}`;
+                            // Função para obter a data da URL e formatá-la
+                            function getQueryParam(param) {
+                                var queryString = window.location.search;
+                                var urlParams = new URLSearchParams(queryString);
+                                return urlParams.get(param);
+                            }
 
-                            // Recarregar a página com a nova URL
-                            window.location.href = url;
+                            function formatDateToDDMMYYYY(dateStr) {
+                                if (!dateStr) return '';
+                                const [year, month, day] = dateStr.split('-');
+                                return `${day}-${month}-${year}`;
+                            }
+
+                            function formatDateToYYYYMMDD(dateStr) {
+                                if (!dateStr) return '';
+                                const [day, month, year] = dateStr.split('-');
+                                return `${year}-${month}-${day}`;
+                            }
+
+                            var urlDate = getQueryParam('date');
+                            var initialDate = urlDate ? formatDateToDDMMYYYY(urlDate) : formattedToday;
+
+                            flatpickr("#date1", {
+                                minDate: today,
+                                dateFormat: "d-m-Y", // Exibição para o usuário
+                                locale: {
+                                    firstDayOfWeek: 0,
+                                    weekdays: {
+                                        shorthand: ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"],
+                                        longhand: ["Domingo", "Segunda-feira", "Terça-feira", "Quarta-feira",
+                                            "Quinta-feira", "Sexta-feira", "Sábado"
+                                        ],
+                                    },
+                                    months: {
+                                        shorthand: ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out",
+                                            "Nov", "Dez"
+                                        ],
+                                        longhand: ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho",
+                                            "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
+                                        ],
+                                    }
+                                },
+                                disable: [
+                                    function(date) {
+                                        return date.getDay() === 6; // Desabilita Sábados
+                                    }
+                                ],
+                                onChange: function(selectedDates, dateStr, instance) {
+                                    // Atualiza o valor do input visível para a data selecionada no formato dd-mm-yyyy
+                                    instance.input.value = dateStr; // Garante o formato dd-mm-yyyy
+
+                                    // Atualiza o valor do input escondido para yyyy-mm-dd
+                                    const hiddenDateInput = document.getElementById('date');
+                                    hiddenDateInput.value = formatDateToYYYYMMDD(dateStr); // Converte para yyyy-mm-dd
+
+                                    // Atualiza a URL com a nova data
+                                    const date = hiddenDateInput.value;
+                                    const id = '<?php echo $id; ?>'; // Substitua pelo ID apropriado
+                                    const service_id = '<?php echo $service_id; ?>'; // Substitua pelo ID do serviço apropriado
+                                    const url = `/scheduling/admin/create/${id}/service/${service_id}?date=${date}`;
+
+                                    // Recarrega a página com a nova URL
+                                    window.location.href = url;
+                                },
+                                onDayCreate: function(dObj, dStr, fp, dayElem) {
+                                    if (dayElem.dateObj.getDay() === 6) {
+                                        dayElem.classList.add('disabled-day');
+                                        dayElem.style.backgroundColor = "#ffcccc"; // Fundo vermelho
+                                        dayElem.style.color = "#000"; // Texto preto
+                                    }
+                                }
+                            });
+
+                            // Define a data inicial no campo de entrada visível
+                            document.getElementById('date1').value = initialDate;
+
+                            // Atualiza o campo escondido quando a página é carregada
+                            const initialHiddenDate = formatDateToYYYYMMDD(initialDate);
+                            document.getElementById('date').value = initialHiddenDate;
                         });
                     </script>
 

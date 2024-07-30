@@ -72,7 +72,7 @@
                 .dropdown-select {
                     background-color: #f8f9fa;
                     color: #333;
-                    padding: 10px 20px;
+                    padding: 10px 2px;
                     border: 1px solid #d4823a;
                     border-radius: .5rem;
                     cursor: pointer;
@@ -80,7 +80,6 @@
 
                 .agendamentos-list {
                     border: none;
-                   
                     padding: 15px 10px;
                     border-radius: 10px;
                     display: flex;
@@ -88,6 +87,7 @@
                     justify-content: space-between;
                     align-items: baseline;
                     box-shadow: #ccc 0px 0px 5px;
+                    margin-bottom: 1rem;
                 }
 
                 #chart-container {
@@ -109,9 +109,10 @@
                         @endforeach
                     </select>
 
-                    <a class="button"
-                        href="{{ route('scheduling.all', ['date' => now('America/Sao_Paulo')->format('Y-m-d')]) }}"
+                    <a class="button" id="today-button"
+                        href="{{ route('scheduling.all', ['date' => now()->format('Y-m-d')]) }}"
                         style="margin-right: 10px;">Hoje</a>
+
                     <a class="button" href="{{ route('scheduling.admin.create', auth()->user()->id) }}"
                         style="margin-left: 10px;">Adicionar</a>
                 </div>

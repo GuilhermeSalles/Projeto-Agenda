@@ -381,7 +381,7 @@ body.dark-theme {
     column-gap: 0.5rem;
     background-color: var(--first-color);
     padding: 1rem 1.5rem;
-    border-radius: 4rem;
+    border-radius: 2rem;
     color: #fff;
     font-weight: var(--font-medium);
     transition: background 0.3s;
