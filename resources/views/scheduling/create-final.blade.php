@@ -155,6 +155,12 @@
                         use Carbon\Carbon;
                         ?>
 
+
+
+
+
+
+
                         <div class="coolinput">
                             <label for="date1">Data:</label>
                             <input type="text" id="date1" name="date1">
@@ -162,6 +168,31 @@
                             <!-- Campo de data escondido que será enviado para o banco de dados -->
                             <input type="hidden" id="date" name="date">
                         </div>
+
+
+                        @php
+                            $notWorkingDays = [];
+
+                            $daysOfWeekMap = [
+                                'sunday'    => 0,
+                                'monday'    => 1,
+                                'tuesday'   => 2,
+                                'wednesday' => 3,
+                                'thursday'  => 4,
+                                'friday'    => 5,
+                                'saturday'  => 6,
+                            ];
+
+                        @endphp
+
+                       @foreach ($weeklySchedules as $day)
+                    
+                            @if($day->working == 0)
+                                @php
+                                    array_push($notWorkingDays, $daysOfWeekMap[$day->day_of_week]);
+                                @endphp
+                            @endif
+                       @endforeach
 
                         <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
                         <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/pt.js"></script>
@@ -217,9 +248,10 @@
                                         }
                                     },
                                     disable: [
-                                        function(date) {
+                                        
+                                        /*function(date) {
                                             return date.getDay() === 6; // Desabilita Sábados
-                                        }
+                                        }*/
                                     ],
                                     onChange: function(selectedDates, dateStr, instance) {
                                         // Atualiza o valor do input visível para a data selecionada no formato dd-mm-yyyy
@@ -239,11 +271,16 @@
                                         window.location.href = url;
                                     },
                                     onDayCreate: function(dObj, dStr, fp, dayElem) {
-                                        if (dayElem.dateObj.getDay() === 6) {
+
+                                        const diasDesativados = <?php echo json_encode($notWorkingDays); ?>; 
+
+                                        //if (dayElem.dateObj.getDay() === 6) {
+                                        if (diasDesativados.includes(dayElem.dateObj.getDay())) {
                                             dayElem.classList.add('disabled-day');
                                             dayElem.style.backgroundColor = "#ffcccc"; // Fundo vermelho
                                             dayElem.style.color = "#000"; // Texto preto
                                         }
+
                                     }
                                 });
 
@@ -255,6 +292,18 @@
                                 document.getElementById('date').value = initialHiddenDate;
                             });
                         </script>
+                        
+                        
+
+            
+
+
+
+
+
+
+
+
 
                         <div class="coolinput">
                             <label>Horário </label>

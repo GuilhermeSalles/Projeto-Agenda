@@ -86,20 +86,42 @@
                     @foreach (['monday' => 'Segunda-feira', 'tuesday' => 'Terça-feira', 'wednesday' => 'Quarta-feira', 'thursday' => 'Quinta-feira', 'friday' => 'Sexta-feira', 'saturday' => 'Sábado', 'sunday' => 'Domingo'] as $day => $dayLabel)
                         @php
                             $schedule = $weeklySchedules->firstWhere('day_of_week', $day);
+
+                           
                         @endphp
+
+                        @if($schedule != null)
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" name="days[]" id="{{ $day }}"
+                                    value="{{ $day }}" {{ $schedule->working == 1 ? 'checked' : '' }}>
+
+                                <label class="form-check-label" for="{{ $day }}">
+                                    {{ $dayLabel }}
+                                    @if ($schedule && $schedule->opening_time && $schedule->closing_time)
+                                        -
+                                        {{ \Carbon\Carbon::createFromFormat('H:i:s', $schedule->opening_time)->format('H:i') }}
+                                        às
+                                        {{ \Carbon\Carbon::createFromFormat('H:i:s', $schedule->closing_time)->format('H:i') }}
+                                    @endif
+                                </label>
+                            </div>
+                        @else
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="checkbox" name="days[]" id="{{ $day }}"
-                                value="{{ $day }}" {{ $schedule ? 'checked' : '' }}>
-                            <label class="form-check-label" for="{{ $day }}">
-                                {{ $dayLabel }}
-                                @if ($schedule && $schedule->opening_time && $schedule->closing_time)
-                                    -
-                                    {{ \Carbon\Carbon::createFromFormat('H:i:s', $schedule->opening_time)->format('H:i') }}
-                                    às
-                                    {{ \Carbon\Carbon::createFromFormat('H:i:s', $schedule->closing_time)->format('H:i') }}
-                                @endif
-                            </label>
-                        </div>
+                                <input class="form-check-input" type="checkbox" name="days[]" id="{{ $day }}"
+                                    value="{{ $day }}" >
+
+                                <label class="form-check-label" for="{{ $day }}">
+                                    {{ $dayLabel }}
+                                    @if ($schedule && $schedule->opening_time && $schedule->closing_time)
+                                        -
+                                        {{ \Carbon\Carbon::createFromFormat('H:i:s', $schedule->opening_time)->format('H:i') }}
+                                        às
+                                        {{ \Carbon\Carbon::createFromFormat('H:i:s', $schedule->closing_time)->format('H:i') }}
+                                    @endif
+                                </label>
+                            </div>
+                        @endif
+
                     @endforeach
                 </div>
 
