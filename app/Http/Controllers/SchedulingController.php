@@ -99,6 +99,9 @@ class SchedulingController extends Controller
 
     public function createSelectService($id, $service_id, Request $request)
     {
+
+        $weeklySchedules = WeeklySchedule::all();
+
         $professional = Professional::find($id);
         $service = Service::find($service_id);
 
@@ -125,6 +128,7 @@ class SchedulingController extends Controller
 
         // Obtendo horários de abertura e fechamento
         $defaultSchedule = WeeklySchedule::where('special_day', false)->first();
+
         if ($defaultSchedule) {
             $opening_time = Carbon::createFromFormat('H:i:s', $defaultSchedule->opening_time)->format('H:i');
             $closing_time = Carbon::createFromFormat('H:i:s', $defaultSchedule->closing_time)->format('H:i');
@@ -134,7 +138,8 @@ class SchedulingController extends Controller
             $closing_time = '19:00';
         }
 
-        return view('scheduling.create-final', compact('professional', 'service', 'specialExits', 'schedulings', 'service_id', 'id', 'date', 'opening_time', 'closing_time'));
+        
+        return view('scheduling.create-final', compact('weeklySchedules', 'professional', 'service', 'specialExits', 'schedulings', 'service_id', 'id', 'date', 'opening_time', 'closing_time'));
     }
 
 
@@ -213,10 +218,16 @@ class SchedulingController extends Controller
         $specialExits = SpecialExit::all();
 
         // Verificar se há um horário padrão
-        if ($defaultSchedule) {
-            $opening_time = \DateTime::createFromFormat('H:i:s', $defaultSchedule->opening_time)->format('H:i');
-            $closing_time = \DateTime::createFromFormat('H:i:s', $defaultSchedule->closing_time)->format('H:i');
-        } else {
+        if($defaultSchedule){
+            if ($defaultSchedule->opening_time != false) {
+                $opening_time = \DateTime::createFromFormat('H:i:s', $defaultSchedule->opening_time)->format('H:i');
+                $closing_time = \DateTime::createFromFormat('H:i:s', $defaultSchedule->closing_time)->format('H:i');
+            }else {
+                // Definir horários padrão se nenhum estiver definido
+                $opening_time = '09:00';
+                $closing_time = '19:00';
+            }
+        }else {
             // Definir horários padrão se nenhum estiver definido
             $opening_time = '09:00';
             $closing_time = '19:00';
@@ -270,7 +281,7 @@ class SchedulingController extends Controller
         ]);
 
         // Apaga os horários anteriores para os dias não especiais
-        DB::table('weekly_schedule')->where('special_day', false)->delete();
+        //DB::table('weekly_schedule')->where('special_day', false)->delete();
 
         // Salve os dados no banco de dados para cada dia da semana que não é especial
         $daysOfWeek = [
@@ -278,8 +289,10 @@ class SchedulingController extends Controller
         ];
 
         foreach ($daysOfWeek as $day) {
-            DB::table('weekly_schedule')->insert([
-                'day_of_week' => $day,
+            DB::table('weekly_schedule')
+            ->where('day_of_week', $day)
+            ->where('special_day', '!=', true)
+            ->update([
                 'opening_time' => $request->opening_time,
                 'closing_time' => $request->closing_time,
                 'created_at' => now(),
@@ -334,16 +347,34 @@ class SchedulingController extends Controller
             'days.*' => 'string|in:monday,tuesday,wednesday,thursday,friday,saturday,sunday',  // Cada item do array deve ser um dia da semana válido
         ]);
 
+        $daysOfWeek = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+        //DB::table('weekly_schedule')->whereIn('day_of_week', $daysOfWeek)->delete();
+
+
+
         // Obter todos os dias da semana do formulário
         $selectedDays = $request->input('days');
 
         // Obter todos os dias da semana da tabela
-        $daysOfWeek = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
 
         // Marcar todos os dias como não trabalhados inicialmente
-        DB::table('weekly_schedule')->whereIn('day_of_week', $daysOfWeek)->update(['working' => false]);
+        //DB::table('weekly_schedule')->whereIn('day_of_week', $daysOfWeek)->update(['working' => false]);
 
         // Atualizar ou inserir os dias selecionados
+
+        //var_dump($selectedDays);
+        //exit;
+        foreach ($daysOfWeek as $day) {
+            DB::table('weekly_schedule')
+                ->updateOrInsert(
+                    ['day_of_week' => $day],
+                    ['working' => false]
+                );
+        }
+
+        //['working' => false, 'opening_time' => '08:00:00', 'closing_time' => '08:00:00']
+
+
         foreach ($selectedDays as $day) {
             DB::table('weekly_schedule')
                 ->updateOrInsert(
@@ -353,8 +384,8 @@ class SchedulingController extends Controller
         }
 
         // Remover os dias não selecionados
-        $notSelectedDays = array_diff($daysOfWeek, $selectedDays);
-        DB::table('weekly_schedule')->whereIn('day_of_week', $notSelectedDays)->delete();
+        //$notSelectedDays = array_diff($daysOfWeek, $selectedDays);
+        //DB::table('weekly_schedule')->whereIn('day_of_week', $notSelectedDays)->delete();
 
         return redirect()->back()->with('success', 'Dias da semana salvos com sucesso!');
     }
