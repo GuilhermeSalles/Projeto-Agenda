@@ -41,9 +41,7 @@
 
         <!-- Botão de Confirmação via WhatsApp -->
         <div class="whatsapp-button" style="text-align: center; margin-top: 20px;">
-            <a href="https://api.whatsapp.com/send?phone=5519984445559&text=Olá, tudo bem? Aqui é {{ $scheduling->name }}, 
-                agendei via site com Profissional: {{ $professional->name }} o Serviço: {{ $service->name }} 
-                Data: {{ \Carbon\Carbon::parse($scheduling->date)->format('d/m') }} Horário: {{ \Carbon\Carbon::parse($scheduling->time)->format('H:i') }} no Valor: R$ {{ number_format($service->value, 2, ',', '.') }}"
+            <a href="https://api.whatsapp.com/send?phone=5519984445559&text=Olá, tudo bem? Aqui é {{ $scheduling->name }}, agendei via site com Profissional: {{ $professional->name }} o Serviço: {{ $service->name }} Data: {{ \Carbon\Carbon::parse($scheduling->date)->format('d/m') }} Horário: {{ \Carbon\Carbon::parse($scheduling->time)->format('H:i') }} no Valor: R$ {{ number_format($service->value, 2, ',', '.') }}"
                 class="button"
                 style="background-color: var(--whatsapp-color); color: #fff; padding: 10px 20px; border-radius: 5px; text-decoration: none;">
                 <i class="ri-whatsapp-fill" style="margin-right: 8px;"></i>Confirme via WhatsApp

@@ -130,7 +130,7 @@
         }
 
         .button:hover {
-            background-color: var(--second-color);
+            box-shadow: 0 0 15px var(--first-color);
         }
 
         .popular__name,
@@ -283,6 +283,7 @@
 
                     <div class="coolinput">
                         <label>Horário </label>
+
                         <?php
                         // Crie um array associativo para mapear os horários dos agendamentos
                         $schedulingTimes = [];
@@ -294,18 +295,19 @@
                             // Obtenha a duração do serviço em minutos
                             $durationMinutes = (int) $scheduling->services->duration;
                         
-                            // Calcule quantos intervalos de 30 minutos são necessários
-                            $intervals = ceil($durationMinutes / 30);
+                            // Calcule quantos intervalos de 60 minutos são necessários
+                            $intervals = ceil($durationMinutes / 60);
                         
                             // Adicione os horários ocupados ao array
                             $startedTime = $formattedTime;
                             for ($i = 1; $i < $intervals; $i++) {
-                                $newTime = date('H:i', strtotime($startedTime . ' + 30 minutes'));
+                                $newTime = date('H:i', strtotime($startedTime . ' + 1 hour'));
                                 $schedulingTimes[$newTime] = $newTime;
                                 $startedTime = $newTime;
                             }
                         }
                         ?>
+
 
                         <style>
                             .scheduling {
@@ -332,8 +334,8 @@
                                     echo "<option value='$time'>$time</option>";
                                 }
                             
-                                // Incrementar 30 minutos
-                                $currentTime->addMinutes(30);
+                                // Incrementar 60 minutos
+                                $currentTime->addMinutes(60);
                             }
                             ?>
                         </select>
@@ -352,7 +354,7 @@
                     </div>
 
                     <div class="form-group" style="text-align: center">
-                        <button class="button" type="submit"> <i class="ri-calendar-check-line"></i>
+                        <button class="button add" type="submit"> <i class="ri-calendar-check-line"></i>
                             Agendar</i></button>
                     </div>
                 </form>

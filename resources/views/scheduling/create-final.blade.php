@@ -174,25 +174,24 @@
                             $notWorkingDays = [];
 
                             $daysOfWeekMap = [
-                                'sunday'    => 0,
-                                'monday'    => 1,
-                                'tuesday'   => 2,
+                                'sunday' => 0,
+                                'monday' => 1,
+                                'tuesday' => 2,
                                 'wednesday' => 3,
-                                'thursday'  => 4,
-                                'friday'    => 5,
-                                'saturday'  => 6,
+                                'thursday' => 4,
+                                'friday' => 5,
+                                'saturday' => 6,
                             ];
 
                         @endphp
 
-                       @foreach ($weeklySchedules as $day)
-                    
-                            @if($day->working == 0)
+                        @foreach ($weeklySchedules as $day)
+                            @if ($day->working == 0)
                                 @php
                                     array_push($notWorkingDays, $daysOfWeekMap[$day->day_of_week]);
                                 @endphp
                             @endif
-                       @endforeach
+                        @endforeach
 
                         <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
                         <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/pt.js"></script>
@@ -248,7 +247,7 @@
                                         }
                                     },
                                     disable: [
-                                        
+
                                         /*function(date) {
                                             return date.getDay() === 6; // Desabilita Sábados
                                         }*/
@@ -272,7 +271,7 @@
                                     },
                                     onDayCreate: function(dObj, dStr, fp, dayElem) {
 
-                                        const diasDesativados = <?php echo json_encode($notWorkingDays); ?>; 
+                                        const diasDesativados = <?php echo json_encode($notWorkingDays); ?>;
 
                                         //if (dayElem.dateObj.getDay() === 6) {
                                         if (diasDesativados.includes(dayElem.dateObj.getDay())) {
@@ -292,15 +291,6 @@
                                 document.getElementById('date').value = initialHiddenDate;
                             });
                         </script>
-                        
-                        
-
-            
-
-
-
-
-
 
 
 
@@ -309,7 +299,6 @@
                             <label>Horário </label>
 
                             <?php
-                            
                             // Crie um array associativo para mapear os horários dos agendamentos
                             $schedulingTimes = [];
                             foreach ($schedulings as $scheduling) {
@@ -320,18 +309,19 @@
                                 // Obtenha a duração do serviço em minutos
                                 $durationMinutes = (int) $scheduling->services->duration;
                             
-                                // Calcule quantos intervalos de 30 minutos são necessários
-                                $intervals = ceil($durationMinutes / 30);
+                                // Calcule quantos intervalos de 60 minutos são necessários
+                                $intervals = ceil($durationMinutes / 60);
                             
                                 // Adicione os horários ocupados ao array
                                 $startedTime = $formattedTime;
                                 for ($i = 1; $i < $intervals; $i++) {
-                                    $newTime = date('H:i', strtotime($startedTime . ' + 30 minutes'));
+                                    $newTime = date('H:i', strtotime($startedTime . ' + 1 hour'));
                                     $schedulingTimes[$newTime] = $newTime;
                                     $startedTime = $newTime;
                                 }
                             }
                             ?>
+
 
                             <style>
                                 .scheduling {
@@ -358,8 +348,8 @@
                                         echo "<option value='$time'>$time</option>";
                                     }
                                 
-                                    // Incrementar 30 minutos
-                                    $currentTime->addMinutes(30);
+                                    // Incrementar 60 minutos
+                                    $currentTime->addMinutes(60);
                                 }
                                 ?>
                             </select>
