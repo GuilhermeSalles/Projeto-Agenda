@@ -126,8 +126,10 @@ class SchedulingController extends Controller
         $schedulings = $merged;
 
 
+        $week_day = $this->getDayOfWeek($request->query('date'));
+
         // Obtendo horários de abertura e fechamento
-        $defaultSchedule = WeeklySchedule::where('special_day', false)->first();
+        $defaultSchedule = WeeklySchedule::where('day_of_week', $week_day)->first();
 
         if ($defaultSchedule) {
             $opening_time = Carbon::createFromFormat('H:i:s', $defaultSchedule->opening_time)->format('H:i');
@@ -142,6 +144,23 @@ class SchedulingController extends Controller
         return view('scheduling.create-final', compact('weeklySchedules', 'professional', 'service', 'specialExits', 'schedulings', 'service_id', 'id', 'date', 'opening_time', 'closing_time'));
     }
 
+
+    function getDayOfWeek($dataString) {
+        $dataCarbon = Carbon::parse($dataString);
+        $diaDaSemana = $dataCarbon->dayOfWeek;
+    
+        $diasDaSemana = [
+            'sunday',
+            'monday',
+            'tuesday',
+            'wednesday',
+            'thursday',
+            'friday',
+            'saturday',
+        ];
+    
+        return $diasDaSemana[$diaDaSemana];
+    }
 
     public function store(Request $request)
     {
