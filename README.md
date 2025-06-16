@@ -1,4 +1,5 @@
 # 🗓️ Projeto Agenda para Barbearia e Cabeleireiro
+[![MIT License](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/GuilhermeSalles/Projeto-Agenda/blob/main/LICENSE)
 
 ## 📖 Visão Geral
 O **Projeto Agenda** é um sistema de agendamento online desenvolvido especificamente para barbearias e salões de cabeleireiro. Este site permite que os clientes marquem horários de forma fácil e rápida, enquanto os proprietários podem gerenciar os agendamentos de maneira eficiente e organizada.
